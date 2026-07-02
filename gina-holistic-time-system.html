@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>每日學習 × AI 診斷 | Gina教室的AI奇蹟</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FDF8F1;--bg-warm:#F7EFE3;--card:#FFFFFF;
+  --amber:#D97706;--amber-deep:#B45309;--amber-dark:#92400E;
+  --teal:#0F766E;--teal-soft:#5EAEA6;
+  --ink:#2E2419;--ink-soft:#6B5D4F;--line:#E8DCCB;
+  --shadow:0 4px 20px rgba(146,64,14,.08);--shadow-lg:0 12px 40px rgba(146,64,14,.12);
+  --radius:18px;--radius-sm:12px;
+  --green:#16a34a;--green-lt:#dcfce7;
+  --yellow-c:#ca8a04;--yellow-lt:#fef9c3;
+  --red-c:#dc2626;--red-lt:#fee2e2;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Serif TC',serif;background:var(--bg);color:var(--ink);font-size:1.05rem;line-height:1.85;padding-bottom:72px}
+a{color:var(--teal);text-decoration:none}
+a:hover{text-decoration:underline}
+.display{font-family:'Playfair Display',serif}
+
+/* HERO */
+.hero{background:linear-gradient(155deg,var(--bg) 0%,var(--bg-warm) 100%);padding:56px 24px 44px;text-align:center;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:'Playfair Display',serif;color:var(--amber);letter-spacing:.08em;font-size:.95rem;margin-bottom:10px;display:block}
+.hero-title{font-size:clamp(2rem,6vw,3.5rem);font-weight:700;line-height:1.22;margin-bottom:14px}
+.hero-sub{color:var(--ink-soft);font-size:1rem;max-width:580px;margin:0 auto 22px;line-height:1.78}
+.badge-row{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.badge{background:var(--amber-dark);color:#fff;font-size:.75rem;padding:3px 12px;border-radius:999px;font-weight:600}
+.badge.teal{background:var(--teal)}
+
+/* BOTTOM NAV */
+.bot-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;z-index:100;box-shadow:0 -4px 14px rgba(146,64,14,.08)}
+.nav-btn{flex:1;padding:8px 4px;text-align:center;cursor:pointer;border:none;background:transparent;color:var(--ink-soft);font-family:'Noto Serif TC',serif;font-size:.72rem;transition:color .2s,background .2s;display:flex;flex-direction:column;align-items:center;gap:1px}
+.nav-btn .ni{font-size:1.35rem}
+.nav-btn.active{color:var(--amber);background:var(--bg-warm)}
+.sec{display:none}
+.sec.active{display:block}
+
+/* SECTION HEADER */
+.sec-hdr{padding:36px 24px 0;max-width:1080px;margin:0 auto}
+.sec-hdr.narrow{max-width:720px}
+.sec-title{font-size:clamp(1.5rem,4vw,2.25rem);font-weight:700;margin-bottom:6px}
+.sec-title::after{content:'';display:block;width:44px;height:3px;background:var(--amber);margin-top:9px;border-radius:2px}
+.sec-desc{color:var(--ink-soft);font-size:.9rem;margin-top:10px;line-height:1.75}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px 26px;box-shadow:var(--shadow);transition:transform .3s,box-shadow .3s}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:24px}
+.mod-num{width:38px;height:38px;background:var(--amber);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:12px}
+.card h3{font-size:1rem;font-weight:700;margin-bottom:7px}
+.card p{color:var(--ink-soft);font-size:.88rem;line-height:1.72}
+.dlist{list-style:none;margin-top:10px}
+.dlist li{padding:5px 0 5px 20px;position:relative;font-size:.85rem;color:var(--ink-soft);border-bottom:1px solid var(--line)}
+.dlist li:last-child{border-bottom:none}
+.dlist li::before{content:'▸';position:absolute;left:0;color:var(--amber)}
+.dlist li strong{color:var(--ink)}
+.hbox{background:linear-gradient(135deg,var(--bg-warm),#fff);border-left:3px solid var(--amber);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:12px 14px;margin-top:10px;font-size:.85rem;color:var(--ink-soft);line-height:1.7}
+
+/* MODULE TABS */
+.mod-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:22px 0 20px;padding:0 24px}
+.mod-tab{padding:6px 14px;border-radius:999px;border:1.5px solid var(--line);background:transparent;font-family:'Noto Serif TC',serif;font-size:.8rem;cursor:pointer;color:var(--ink-soft);transition:all .2s;white-space:nowrap}
+.mod-tab.active{background:var(--amber);border-color:var(--amber);color:#fff;font-weight:600}
+.mod-panel{display:none;padding:0 24px 12px}
+.mod-panel.active{display:block}
+
+/* KPT TABLE */
+.kpt-wrap{overflow-x:auto;margin-top:14px}
+.kpt-table{width:100%;border-collapse:collapse;font-size:.83rem;min-width:480px}
+.kpt-table th{background:var(--amber);color:#fff;padding:9px 12px;text-align:left;font-weight:600}
+.kpt-table td{padding:9px 12px;border-bottom:1px solid var(--line);color:var(--ink-soft);vertical-align:top}
+.kpt-table tr:last-child td{border-bottom:none}
+.kpt-table td:first-child{font-weight:700;color:var(--ink);white-space:nowrap}
+
+/* PLANNER */
+.planner{padding:20px 16px;max-width:720px;margin:0 auto}
+.p-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px 22px;box-shadow:var(--shadow);margin-bottom:16px}
+.p-card h3{font-size:.95rem;font-weight:700;margin-bottom:5px}
+.p-card .desc{color:var(--ink-soft);font-size:.82rem;margin-bottom:12px;line-height:1.65}
+.inp{width:100%;padding:9px 13px;border:1.5px solid var(--line);border-radius:var(--radius-sm);font-family:'Noto Serif TC',serif;font-size:.9rem;color:var(--ink);background:var(--bg);outline:none;transition:border-color .2s}
+.inp:focus{border-color:var(--amber)}
+.inp+.inp{margin-top:7px}
+textarea.inp{resize:vertical;min-height:72px}
+
+/* TIME LOG */
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.leg-item{display:flex;align-items:center;gap:4px;font-size:.75rem;color:var(--ink-soft)}
+.leg-dot{width:13px;height:13px;border-radius:3px}
+.leg-dot.empty{background:var(--bg-warm);border:1.5px solid var(--line)}
+.leg-dot.green{background:var(--green-lt);border:1.5px solid var(--green)}
+.leg-dot.yellow{background:var(--yellow-lt);border:1.5px solid var(--yellow-c)}
+.leg-dot.red{background:var(--red-lt);border:1.5px solid var(--red-c)}
+.t-period{margin-bottom:14px}
+.t-period-lbl{font-size:.75rem;font-weight:700;color:var(--ink-soft);margin-bottom:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.period-tag{font-size:.65rem;padding:2px 7px;border-radius:999px;font-weight:600}
+.pt-gold{background:#fef3c7;color:#92400e}
+.pt-low{background:#f0fdf4;color:#166534}
+.pt-mem{background:#ede9fe;color:#5b21b6}
+.pt-other{background:var(--bg-warm);color:var(--ink-soft)}
+.t-blocks{display:flex;gap:3px;flex-wrap:wrap}
+.tblk{width:40px;height:40px;border-radius:7px;border:1.5px solid var(--line);background:var(--bg-warm);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.56rem;color:var(--ink-soft);transition:transform .12s,background .12s,border-color .12s;user-select:none;-webkit-tap-highlight-color:transparent}
+.tblk:hover{transform:scale(1.1)}
+.tblk:active{transform:scale(.93)}
+.tblk.green{background:var(--green-lt);border-color:var(--green);color:#15803d}
+.tblk.yellow{background:var(--yellow-lt);border-color:var(--yellow-c);color:#92400e}
+.tblk.red{background:var(--red-lt);border-color:var(--red-c);color:#991b1b}
+.tblk-time{font-size:.5rem;line-height:1}
+.tblk-icon{font-size:.85rem;margin-top:1px}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-top:14px}
+.stat-box{background:var(--bg-warm);border-radius:var(--radius-sm);padding:10px 8px;text-align:center;border:1px solid var(--line)}
+.stat-num{font-family:'Playfair Display',serif;font-size:1.45rem;font-weight:700;line-height:1}
+.stat-lbl{font-size:.68rem;color:var(--ink-soft);margin-top:3px}
+.green-stat .stat-num{color:var(--green)}
+.yellow-stat .stat-num{color:var(--yellow-c)}
+.red-stat .stat-num{color:var(--red-c)}
+.amber-stat .stat-num{color:var(--amber)}
+.bar-wrap{background:var(--bg-warm);border-radius:999px;height:7px;overflow:hidden;margin-top:6px}
+.bar{height:100%;border-radius:999px;transition:width .4s ease}
+.bar.green{background:var(--green)}
+.bar.red{background:var(--red-c)}
+
+/* COUNTERS */
+.ctr-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.ctr-box{background:var(--bg-warm);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 10px;text-align:center}
+.ctr-lbl{font-size:.72rem;color:var(--ink-soft);margin-bottom:6px}
+.ctr-num{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--amber);line-height:1;margin-bottom:8px}
+.ctr-num.danger{color:var(--red-c)}
+.ctr-btns{display:flex;gap:7px;justify-content:center}
+.ctr-btn{width:34px;height:34px;border-radius:50%;border:none;cursor:pointer;font-size:1.15rem;font-weight:700;transition:transform .1s;display:flex;align-items:center;justify-content:center}
+.ctr-btn:active{transform:scale(.88)}
+.ctr-btn.plus{background:var(--amber);color:#fff}
+.ctr-btn.minus{background:var(--line);color:var(--ink)}
+.ctr-btn.plus-r{background:var(--red-c);color:#fff}
+.tally{font-size:1.7rem;letter-spacing:3px;color:var(--ink);min-height:38px;margin:8px 0 4px;word-break:break-all;text-align:center}
+.tally-note{font-size:.72rem;color:var(--ink-soft)}
+
+/* CHECKBOXES */
+.chk-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.chk-row:last-child{border-bottom:none}
+.chk-box{width:22px;height:22px;flex-shrink:0;border:2px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;transition:all .15s;color:transparent;font-size:.85rem;margin-top:1px}
+.chk-box.checked{background:var(--amber);border-color:var(--amber);color:#fff}
+.chk-lbl{font-size:.85rem;color:var(--ink-soft);line-height:1.6}
+.chk-lbl strong{color:var(--ink)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;background:var(--amber);color:#fff;font-weight:600;padding:12px 26px;border-radius:999px;border:none;cursor:pointer;font-family:'Noto Serif TC',serif;font-size:.9rem;transition:background .2s,transform .15s;justify-content:center}
+.btn:hover{background:var(--amber-deep);transform:translateY(-2px)}
+.btn:active{transform:scale(.96)}
+.btn.full{width:100%}
+.btn.teal{background:var(--teal)}
+.btn.teal:hover{background:#0c5e57}
+
+/* API */
+.api-wrap{position:relative}
+.api-wrap .inp{padding-right:68px}
+.api-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:var(--bg-warm);border:1px solid var(--line);border-radius:7px;padding:3px 9px;font-size:.72rem;cursor:pointer;color:var(--ink-soft)}
+.model-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.model-row label{font-size:.8rem;color:var(--ink-soft);white-space:nowrap}
+.model-row select{flex:1;padding:7px 10px;border:1.5px solid var(--line);border-radius:var(--radius-sm);font-family:'Noto Serif TC',serif;font-size:.82rem;color:var(--ink);background:var(--bg);outline:none}
+.model-row select:focus{border-color:var(--amber)}
+
+/* LOADING & RESULT */
+.loading{display:none;text-align:center;padding:28px;color:var(--ink-soft);font-size:.9rem}
+.loading.show{display:block}
+.pulse{display:inline-block;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.ai-result{background:linear-gradient(145deg,#fff9f2,#fff);border:1.5px solid var(--amber);border-radius:var(--radius);padding:24px;margin-top:16px;display:none;line-height:1.9;font-size:.92rem}
+.ai-result.show{display:block}
+.ai-rhdr{border-bottom:2px solid var(--amber);padding-bottom:11px;margin-bottom:16px}
+.ai-section{margin:12px 0;padding:12px 14px;border-radius:var(--radius-sm);background:var(--bg-warm)}
+.ai-section-title{font-weight:700;font-size:.95rem;margin-bottom:6px;color:var(--amber-dark)}
+.ai-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);text-align:center;font-size:.75rem;color:var(--ink-soft)}
+.err-box{display:none;background:var(--red-lt);border:1px solid var(--red-c);border-radius:var(--radius-sm);padding:12px 14px;color:#991b1b;font-size:.85rem;margin-top:12px;line-height:1.65}
+
+/* PROMPT PREVIEW */
+.prompt-btn{width:100%;text-align:left;background:var(--bg-warm);border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px 14px;font-family:'Noto Serif TC',serif;font-size:.82rem;cursor:pointer;color:var(--ink-soft);margin-top:10px;display:flex;align-items:center;gap:7px}
+.prompt-box{display:none;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px;margin-top:6px;font-size:.73rem;color:var(--ink-soft);line-height:1.65;white-space:pre-wrap;max-height:220px;overflow-y:auto;font-family:monospace}
+.prompt-box.open{display:block}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* BACK TO TOP */
+.back-top{position:fixed;bottom:82px;right:16px;width:42px;height:42px;background:var(--amber);color:#fff;border-radius:50%;border:none;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);opacity:0;transition:opacity .3s;z-index:90;pointer-events:none}
+.back-top.show{opacity:1;pointer-events:auto}
+
+/* FOOTER */
+.foot{text-align:center;padding:32px 24px 16px;color:var(--ink-soft);font-size:.82rem;border-top:1px solid var(--line);margin-top:32px}
+.foot strong{color:var(--amber)}
+.div{height:1px;background:var(--line);margin:20px 0}
+
+@media(max-width:400px){
+  .tblk{width:36px;height:36px}
+  .ctr-num{font-size:1.9rem}
+  .hero-title{font-size:1.75rem}
+  .stats-row{grid-template-columns:1fr 1fr}
+}
+
+/* CONCEPT ACCORDION */
+.c-list{display:flex;flex-direction:column;gap:7px}
+.c-item{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;box-shadow:var(--shadow)}
+.c-hdr{padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:9px;user-select:none;-webkit-tap-highlight-color:transparent;transition:background .15s}
+.c-hdr:hover{background:var(--bg-warm)}
+.c-ico{font-size:1.1rem;width:26px;text-align:center;flex-shrink:0}
+.c-term{font-weight:700;font-size:.9rem;color:var(--ink);flex:1}
+.c-cat{font-size:.62rem;padding:2px 8px;border-radius:999px;white-space:nowrap;font-weight:600}
+.c-cat.brain{background:#fef3c7;color:#92400e}
+.c-cat.behav{background:#dcfce7;color:#166534}
+.c-cat.learn{background:#ede9fe;color:#5b21b6}
+.c-cat.mgmt{background:#e0f2fe;color:#0369a1}
+.c-arrow{color:var(--amber);font-size:.85rem;transition:transform .25s;flex-shrink:0}
+.c-arrow.open{transform:rotate(180deg)}
+.c-body{display:none;padding:13px 15px 15px;border-top:1px solid var(--line);font-size:.86rem;color:var(--ink-soft);line-height:1.78}
+.c-body.open{display:block}
+.c-body strong{color:var(--ink)}
+.c-body p+p{margin-top:7px}
+.c-src{display:inline-block;font-size:.73rem;color:var(--teal);margin-top:9px;font-style:italic;border-left:2px solid var(--teal);padding-left:8px}
+.c-eg{background:var(--bg-warm);border-radius:8px;padding:8px 11px;margin-top:9px;font-size:.82rem;color:var(--ink-soft);line-height:1.65}
+.c-tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.c-tag-filter{padding:4px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;font-family:'Noto Serif TC',serif;font-size:.75rem;cursor:pointer;color:var(--ink-soft);transition:all .15s}
+.c-tag-filter.active{background:var(--amber);border-color:var(--amber);color:#fff}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero reveal">
+  <span class="eyebrow display">Daily Learning × AI Diagnosis</span>
+  <h1 class="display hero-title">每日學習 × AI 診斷</h1>
+  <p class="hero-sub">腦科學 × 行為經濟學 × 高效學習法 × AI 覆盤<br>從「被動趕進度」到「主動掌控時間」</p>
+  <div class="badge-row">
+    <span class="badge">晝夜節律</span>
+    <span class="badge teal">多巴胺機制</span>
+    <span class="badge">番茄鐘</span>
+    <span class="badge teal">間隔重複</span>
+    <span class="badge">費曼輸出</span>
+    <span class="badge teal">Gemini AI 覆盤</span>
+  </div>
+</section>
+
+<!-- BOTTOM NAV -->
+<nav class="bot-nav">
+  <button class="nav-btn active" onclick="switchTab('intro',this)"><span class="ni">📚</span><span>系統介紹</span></button>
+  <button class="nav-btn" onclick="switchTab('plan',this)"><span class="ni">📝</span><span>今日計畫</span></button>
+  <button class="nav-btn" onclick="switchTab('ai',this)"><span class="ni">🤖</span><span>AI覆盤</span></button>
+</nav>
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- ══════════ SEC 1: INTRO ══════════ -->
+<div class="sec active" id="sec-intro">
+  <div class="sec-hdr">
+    <span class="eyebrow">System Overview</span>
+    <h2 class="sec-title">四大核心模塊</h2>
+    <p class="sec-desc">四個模塊構成閉環「學習生態圈」，缺一不可。選擇下方分頁深入了解。</p>
+  </div>
+  <div class="mod-tabs">
+    <button class="mod-tab active" onclick="switchMod('brain',this)">🧠 腦能量規劃</button>
+    <button class="mod-tab" onclick="switchMod('exec',this)">⏱️ 實作記錄</button>
+    <button class="mod-tab" onclick="switchMod('method',this)">📖 學習方法</button>
+    <button class="mod-tab" onclick="switchMod('pdca',this)">🔄 PDCA覆盤</button>
+    <button class="mod-tab" onclick="switchMod('concepts',this)">🔍 概念詞典</button>
+  </div>
+
+  <div class="mod-panel active" id="mp-brain">
+    <div class="card-grid">
+      <div class="card reveal">
+        <div class="mod-num display">I</div>
+        <h3>☀️ 晝夜節律黃金時段</h3>
+        <p>依據皮質醇與多巴胺的自然高峰，分配不同難度的學習任務，事半功倍。</p>
+        <ul class="dlist">
+          <li><strong>黃金專注期</strong> 08:00–11:30 / 15:00–17:00：數學推理、英文寫作等高認知任務</li>
+          <li><strong>低谷修復期</strong> 13:00–14:30：整理錯題、背單字、15分鐘正念午休</li>
+          <li><strong>記憶鞏固期</strong> 19:30–22:00：提取練習、預習隔天進度</li>
+        </ul>
+      </div>
+      <div class="card reveal" style="transition-delay:.1s">
+        <div class="mod-num display" style="background:var(--teal)">II</div>
+        <h3>⚡ 多巴胺微補給機制</h3>
+        <p>手機讓人分心，是因為它提供即時多巴胺。「任務顆粒化」讓學習本身成為你的多巴胺來源。</p>
+        <div class="hbox">
+          <span style="color:var(--red-c)">✗ 錯誤：</span>「讀英文」<br>
+          <span style="color:var(--green)">✓ 正確：</span>「列出英文課文第3課 5 個核心單字並造句」（約20分鐘）
+        </div>
+        <p style="margin-top:9px;font-size:.82rem;color:var(--ink-soft)">完成→劃掉→多巴胺→「贏的感覺」→驅動下一個任務 🔁</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mod-panel" id="mp-exec">
+    <div class="card-grid">
+      <div class="card reveal">
+        <div class="mod-num display">III</div>
+        <h3>🍅 25+5 變形番茄鐘</h3>
+        <p>專注 25 分鐘，嚴格休息 5 分鐘。進入心流可延長至 45 分鐘，搭配 10 分鐘休息。</p>
+        <div class="hbox">🚫 <strong>休息時禁止看手機</strong>——手機強烈刺激會破壞大腦剛建立的記憶鏈結。建議看窗外、拉伸、深呼吸，補充血清素。</div>
+      </div>
+      <div class="card reveal" style="transition-delay:.1s">
+        <div class="mod-num display" style="background:var(--teal)">IV</div>
+        <h3>📵 分心計數 &amp; 三色日誌</h3>
+        <p>每次想看手機但忍住，就畫一記。將衝動「外化」，讓自己意識到分心頻率。</p>
+        <div class="hbox">
+          🟢 <strong>綠色</strong>＝核心學習（自主、攻克弱科）<br>
+          🟡 <strong>黃色</strong>＝常規固定（上課、通勤、吃飯）<br>
+          🔴 <strong>紅色</strong>＝無效消耗（超時滑手機、發呆）
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mod-panel" id="mp-method">
+    <div class="card-grid">
+      <div class="card reveal">
+        <div class="mod-num display">V</div>
+        <h3>📆 3軌間隔重複表</h3>
+        <p>在「即將遺忘」的時刻複習效果最佳——艾賓浩斯遺忘曲線的精髓。</p>
+        <ul class="dlist">
+          <li><strong>D+1 隔天：</strong>快速瀏覽錯題本（5分鐘）</li>
+          <li><strong>D+7 一週後：</strong>遮住答案自我檢測（10分鐘）</li>
+          <li><strong>D+21 三週後：</strong>融入大考模擬題（15分鐘）</li>
+        </ul>
+      </div>
+      <div class="card reveal" style="transition-delay:.1s">
+        <div class="mod-num display" style="background:var(--teal)">VI</div>
+        <h3>💡 費曼輸出法日誌</h3>
+        <p>強迫自己「用小學生聽懂的話」解釋最難的概念，是最有效的主動提取練習。</p>
+        <div class="hbox">「氧化還原就像搶椅子——電子是椅子，搶到的是被<em>還原</em>，失去的是被<em>氧化</em>。」</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mod-panel" id="mp-pdca">
+    <div class="card reveal" style="max-width:680px">
+      <div class="mod-num display">VII</div>
+      <h3>🔄 三層 PDCA 覆盤循環</h3>
+      <p>沒有覆盤的時間管理只是流水帳。本系統設計「日 / 週 / 月」三層閉環。</p>
+      <div class="hbox" style="margin-bottom:14px">
+        📅 <strong>每日</strong>：睡前 3 分鐘 Plus / Delta / Action<br>
+        📅 <strong>每週</strong>：週日 15 分鐘 KPT 框架複盤<br>
+        📅 <strong>每月</strong>：30 分鐘目標與能量對齊
+      </div>
+      <div class="kpt-wrap">
+        <table class="kpt-table">
+          <tr><th>維度</th><th>核心提問</th><th>實作範例</th></tr>
+          <tr><td>✅ Keep</td><td>哪些好習慣需要繼續？</td><td>通勤背單字效果好，繼續保持</td></tr>
+          <tr><td>⚠️ Problem</td><td>哪裡時間流失？哪科落後？</td><td>週四數學卡住後滑手機1小時</td></tr>
+          <tr><td>🎯 Try</td><td>下週什麼具體行動改善？</td><td>數學卡住15分鐘就先跳，問同學</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="mod-panel" id="mp-concepts">
+    <div style="padding:0 0 16px">
+      <div class="c-tag-row">
+        <button class="c-tag-filter active" onclick="filterC('all',this)">全部 15</button>
+        <button class="c-tag-filter" onclick="filterC('brain',this)">🧠 腦科學</button>
+        <button class="c-tag-filter" onclick="filterC('behav',this)">⚖️ 行為科學</button>
+        <button class="c-tag-filter" onclick="filterC('learn',this)">📖 學習方法</button>
+        <button class="c-tag-filter" onclick="filterC('mgmt',this)">🔄 管理框架</button>
+      </div>
+      <div class="c-list">
+        <div class="c-item" data-cat="behav">
+          <div class="c-hdr" onclick="togC(this)">
+            <span class="c-ico">🐸</span>
+            <span class="c-term">青蛙任務</span>
+            <span class="c-cat behav">行為科學</span>
+            <span class="c-arrow">▾</span>
+          </div>
+          <div class="c-body"><p>每天<strong>最不想做、但最重要的那件事</strong>。先吃青蛙，剩下的一天都是bonus。</p><p>背後有兩個大腦機制撐著：①早晨皮質醇高峰，意志力最強；②完成最難的事後，多巴胺系統被啟動，會持續推動你完成其他任務。</p><div class="c-eg">例：與其說「今天要讀數學」，不如設定「解開上週搞不懂的三角函數第3題」——具體、有終點、完成後會真的鬆一口氣。</div><div class="c-src">📖 Brian Tracy《Eat That Frog!》｜靈感來自馬克吐溫名言</div></div>
+        </div>
+        <div class="c-item" data-cat="brain">
+          <div class="c-hdr" onclick="togC(this)">
+            <span class="c-ico">☀️</span>
+            <span class="c-term">晝夜節律</span>
+            <span class="c-cat brain">腦科學</span>
+            <span class="c-arrow">▾</span>
+          </div>
+          <div class="c-body"><p>大腦的<strong>24小時生理時鐘</strong>，決定你什麼時候清醒、疲倦、記憶力強或弱。2017年諾貝爾生理醫學獎的研究主題。</p><p>不是所有時間都一樣有效——配合節律安排任務，同樣的時間可以產出2倍效率。</p><div class="c-eg">⭐ 上午8–11:30、下午3–5點：皮質醇+多巴胺雙高峰→ 攻克高難度任務<br>💤 下午1–2:30：消化疲倦期 → 低認知任務或午休<br>🌙 晚間7:30–10點：記憶鞏固期 → 提取練習、預習</div><div class="c-src">🔬 2017 Nobel Prize in Physiology or Medicine</div></div>
+        </div>
+        <div class="c-item" data-cat="brain">
+          <div class="c-hdr" onclick="togC(this)">
+            <span class="c-ico">⚡</span>
+            <span class="c-term">多巴胺</span>
+            <span class="c-cat brain">腦科學</span>
+            <span class="c-arrow">▾</span>
+          </div>
+          <div class="c-body"><p>大腦獎勵系統的核心神經傳導物質，負責<strong>「動機與預期」</strong>，不是快樂本身，而是讓你「想要繼續做」的衝動。</p><p>手機通知劫持了這個系統（高頻、即時、不可預測的獎勵）。<strong>任務顆粒化</strong>的目的，就是讓學習也能穩定觸發多巴胺，讓你不需要靠手機就能維持動力。</p><div class="c-src">🔬 Neuroscience research on dopamine reward circuitry</div></div>
+        </div>
+        <div class="c-item" data-cat="brain">
+          <div class="c-hdr" onclick="togC(this)">
+            <span class="c-ico">😌</span>
+            <span class="c-term">血清素</span>
+            <span class="c-cat brain">腦科學</span>
+            <span class="c-arrow">▾</span>
+          </div>
+          <div class="c-body"><p>負責<strong>平靜、穩定與幸福感</strong>的神經傳導物質。不像多巴胺那樣衝動，血清素讓你「腳踏實地、持續」。</p><p>番茄鐘的休息時間禁止看手機，就是為了補充血清素——陽光、輕度運動、深呼吸、遠望窗外，都是快速充電的方式。休息沒有補到血清素，下一個番茄鐘會明顯更難專注。</p><div class="c-src">🔬 Serotonin and its role in mood regulation</div></div>
+        </div>
+        <div class="c-item" data-cat="brain">
+          <div class="c-hdr" onclick="togC(this)">
+            <span class="c-ico">💊</span>
+            <span class="c-term">皮質醇</span>
+            <span class="c-cat brain">腦科學</span>
+            <span class="c-arrow">▾</span>
+          </div>
+          <div class="c-body"><p>俗稱「壓力荷爾蒙」，但早晨的高峰其實是<strong>清醒與專注的啟動訊號</strong>，不是壞事。</p><p>問題是：長期高壓（慢性皮質醇過高）會損傷<strong>海馬迴</strong>——大腦負責記憶形成的區域。這就是為什麼「死讀書死撐著」長期下來記不住東西：大腦的記憶倉庫正在被壓力腐蝕。</p><div class="c-src">🔬 HPA axis & cortisol effects on hippocampus</div></div>
+        </div>
+        <div class="c-item" data-cat="brain">
+          <div class="c-hdr" onclick="togC(this)">
+            <span class="c-ico">🌊</span>
+            <span class="c-term">心流</span>
+            <span class="c-cat brain">腦科學</span>
+            <span class="c-arrow">▾</span>
+          </div>
+          <div class="c-body"><p>完全沉浸、忘記時間、輕鬆輸出高品質成果的巔峰狀態。不是努力逼出來的，是<strong>條件對了自然進入</strong>的。</p><p>三個必要條件：① 挑戰難度適當（不太難不太簡單）② 目標清晰具體 ③ 環境無打擾。進入心流後，本系統建議從25分鐘延長到45分鐘專注。</p><div class="c-src">📖 Mihaly Csikszentmihalyi《Flow: The Psychology of Optimal Experience》</div></div>
+        </div>
+        <div class="c-item" data-cat="behav">
+          <div class="c-hdr" onclick="togC(this)">
+            <span class="c-ico">🎯</span>
+            <span class="c-term">任務顆粒化</span>
+            <span class="c-cat behav">行為科學</span>
+            <span class="c-arrow">▾</span>
+          </div>
+          <div class="c-body"><p>把模糊的大任務，切成<strong>「20分鐘內可完成、有明確終點」的具體小任務</strong>。</p><p>原因：大腦對「不知道終點在哪」的任務會本能地逃避（啟動阻力）；而小任務完成後的劃掉動作，能觸發多巴胺釋放，讓你自動想做下一個。</p><div class="c-eg">✗ 「讀英文」（模糊、無終點）<br>✓ 「背Unit3第1-5個單字，各造一句話」（具體、20分鐘內完成）</div></div>
+        </div>
+        <div class="c-item" data-cat="behav">
+          <div class="c-hdr" onclick="togC(this)">
+            <span class="c-ico">⚖️</span>
+            <span class="c-term">損失規避</span>
+            <span class="c-cat behav">行為科學</span>
+            <span class="c-arrow">▾</span>
+          </div>
+          <div class="c-body"><p>行為經濟學的核心發現：<strong>人對損失的痛苦，是同等獲得的快樂的約2倍</strong>。看到「失去」比看到「得到」更能促使行動。</p><p>三色時間軸的設計邏輯就在這裡：看到自己今天有多少「紅色（無效消耗）」，那種視覺上的損失感，比任何鼓勵都更能讓你明天主動減少紅色。</p><div class="c-src">📖 Daniel Kahneman & Amos Tversky，2002年諾貝爾經濟學獎</div></div>
+        </div>
+        <div class="c-item" data-cat="learn">
+          <div class="c-hdr" onclick="togC(this)">
+            <span class="c-ico">🍅</span>
+            <span class="c-term">番茄工作法</span>
+            <span class="c-cat learn">學習方法</span>
+            <span class="c-arrow">▾</span>
+          </div>
+          <div class="c-body"><p>Francesco Cirillo 在1980年代用廚房番茄計時器發明的專注技術：<strong>25分鐘全力專注 + 5分鐘徹底休息 = 1個番茄鐘</strong>。</p><p>為什麼有效？讓大腦知道「辛苦是有邊界的」，大幅降低啟動阻力。你不是在「讀書」，你只是在「撐過25分鐘」——聽起來容易多了。</p><div class="c-eg">本系統的變形版：進入心流時可延長至45分鐘，但必須搭配10分鐘休息（且休息禁用手機）。</div><div class="c-src">📖 Francesco Cirillo《The Pomodoro Technique》</div></div>
+        </div>
+        <div class="c-item" data-cat="learn">
+          <div class="c-hdr" onclick="togC(this)">
+            <span class="c-ico">📉</span>
+            <span class="c-term">艾賓浩斯遺忘曲線</span>
+            <span class="c-cat learn">學習方法</span>
+            <span class="c-arrow">▾</span>
+          </div>
+          <div class="c-body"><p>德國心理學家Hermann Ebbinghaus在1885年的記憶實驗發現：學完新東西後，<strong>20分鐘忘42%、1天後忘67%、1週後忘75%</strong>，遺忘速度在初期最快。</p><p>但每次在「快要忘掉但還沒完全忘」的時刻複習，記憶保留率就能大幅回升，且下一次遺忘的速度會變慢。這就是間隔重複的理論基礎。</p><div class="c-src">📖 Hermann Ebbinghaus《Über das Gedächtnis》1885</div></div>
+        </div>
+        <div class="c-item" data-cat="learn">
+          <div class="c-hdr" onclick="togC(this)">
+            <span class="c-ico">🔁</span>
+            <span class="c-term">間隔重複</span>
+            <span class="c-cat learn">學習方法</span>
+            <span class="c-arrow">▾</span>
+          </div>
+          <div class="c-body"><p>根據艾賓浩斯遺忘曲線，在<strong>最佳時間點複習</strong>（不是每天複習，而是D+1、D+7、D+21），讓記憶以最少時間達到最長保留。</p><p>比臨時抱佛腳的效率高3–5倍。原理：每次主動喚起記憶，都會讓記憶痕跡更深、下次遺忘速度更慢。</p><div class="c-eg">學完一個章節後排定：明天快速翻一遍錯題 → 一週後遮住答案自測 → 三週後融入模擬題</div><div class="c-src">🔬 Ebbinghaus Spacing Effect / Spaced Repetition Research</div></div>
+        </div>
+        <div class="c-item" data-cat="learn">
+          <div class="c-hdr" onclick="togC(this)">
+            <span class="c-ico">💡</span>
+            <span class="c-term">費曼技巧</span>
+            <span class="c-cat learn">學習方法</span>
+            <span class="c-arrow">▾</span>
+          </div>
+          <div class="c-body"><p>諾貝爾物理學獎得主Richard Feynman的學習哲學：<strong>「如果你不能用簡單的話解釋，代表你還沒真正理解。」</strong></p><p>步驟：① 選一個概念 ② 用小學生聽懂的話解釋它 ③ 找到說不清楚的地方 ④ 回去搞懂它 ⑤ 再解釋一次。每個卡住的地方，都是你真正的知識漏洞。</p><div class="c-eg">「氧化還原就像搶椅子遊戲——電子是椅子，搶到椅子的被還原，失去椅子的被氧化。」</div><div class="c-src">💡 Richard Feynman，1965年諾貝爾物理學獎</div></div>
+        </div>
+        <div class="c-item" data-cat="learn">
+          <div class="c-hdr" onclick="togC(this)">
+            <span class="c-ico">🧲</span>
+            <span class="c-term">提取練習</span>
+            <span class="c-cat learn">學習方法</span>
+            <span class="c-arrow">▾</span>
+          </div>
+          <div class="c-body"><p>也叫「Testing Effect（測試效果）」：主動從記憶中<strong>「拉出」資訊</strong>，比重複閱讀的學習效果強2–3倍。</p><p>為什麼？被動閱讀讓大腦覺得「我已經會了」；主動提取才會讓大腦知道「這個資訊是重要的，要鞏固它」。遮住答案自測、費曼輸出、寫模擬題，都是提取練習。</p><div class="c-src">🔬 Roediger & Karpicke (2006). Science.</div></div>
+        </div>
+        <div class="c-item" data-cat="mgmt">
+          <div class="c-hdr" onclick="togC(this)">
+            <span class="c-ico">🔄</span>
+            <span class="c-term">PDCA循環</span>
+            <span class="c-cat mgmt">管理框架</span>
+            <span class="c-arrow">▾</span>
+          </div>
+          <div class="c-body"><p>源自管理學的品質改善循環：<strong>Plan（計畫）→ Do（執行）→ Check（檢查）→ Act（改善）→ 循環</strong>。</p><p>用在學習上：每天計畫任務（P）、實際執行並記錄（D）、睡前微覆盤找問題（C）、隔天調整策略（A）。沒有Check和Act的學習，只是不斷重複同樣的錯誤。</p><div class="c-src">📖 W. Edwards Deming，管理學之父</div></div>
+        </div>
+        <div class="c-item" data-cat="mgmt">
+          <div class="c-hdr" onclick="togC(this)">
+            <span class="c-ico">📋</span>
+            <span class="c-term">KPT框架</span>
+            <span class="c-cat mgmt">管理框架</span>
+            <span class="c-arrow">▾</span>
+          </div>
+          <div class="c-body"><p>源自軟體開發「敏捷回顧」的覆盤方法，用3個問題讓反思有結構：<strong>Keep（繼續做好的事）/ Problem（遇到的問題）/ Try（下週嘗試的改善行動）</strong>。</p><p>比「我這週做了什麼」更有行動力，因為每個Problem都必須對應一個具體的Try，不讓反思停在抱怨。</p><div class="c-eg">Problem：週四數學卡住，挫折後滑手機1小時<br>Try：卡住超過15分鐘就先跳到英文，或立刻傳訊問同學</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot reveal">
+    <p>✨ <strong>Gina教室的AI奇蹟</strong><br>AI賦能｜老師的教學進化日常</p>
+    <p style="margin-top:4px">點選「今日計畫」開始記錄你的第一天 →</p>
+  </div>
+</div>
+
+<!-- ══════════ SEC 2: PLANNER ══════════ -->
+<div class="sec" id="sec-plan">
+  <div class="planner">
+    <div class="sec-hdr narrow reveal" style="padding-left:0;padding-right:0">
+      <span class="eyebrow">Daily Planner</span>
+      <h2 class="sec-title">每日學習 × AI 診斷</h2>
+      <p class="sec-desc">填完整份計畫後，切換到「AI覆盤」讓 Gemini 診斷你的時間運用！</p>
+    </div>
+
+    <div class="p-card reveal">
+      <h3>📅 今日日期</h3>
+      <input type="date" class="inp" id="planDate">
+    </div>
+
+    <div class="p-card reveal">
+      <h3>🐸 核心青蛙任務</h3>
+      <p class="desc">限 1–2 個具體任務，黃金期攻克。必須具體、可在 20 分鐘內完成！</p>
+      <input type="text" class="inp" id="frog1" placeholder="任務 1：例「完成數學課本 p.87 第1-5題並核對解題步驟」">
+      <input type="text" class="inp" id="frog2" placeholder="任務 2（選填）：例「背英文 Unit3 單字20個並造句3句」">
+    </div>
+
+    <div class="p-card reveal">
+      <h3>🎨 三色時間軸</h3>
+      <p class="desc">點擊每格切換顏色（空白→🟢核心→🟡固定→🔴無效→空白）。每格 = 30 分鐘。</p>
+      <div class="legend">
+        <div class="leg-item"><div class="leg-dot empty"></div>未記錄</div>
+        <div class="leg-item"><div class="leg-dot green"></div>🟢 核心學習</div>
+        <div class="leg-item"><div class="leg-dot yellow"></div>🟡 常規固定</div>
+        <div class="leg-item"><div class="leg-dot red"></div>🔴 無效消耗</div>
+      </div>
+      <div id="timeLog"></div>
+      <div class="stats-row">
+        <div class="stat-box green-stat"><div class="stat-num" id="sGreen">0m</div><div class="stat-lbl">🟢 核心學習</div></div>
+        <div class="stat-box yellow-stat"><div class="stat-num" id="sYellow">0m</div><div class="stat-lbl">🟡 常規固定</div></div>
+        <div class="stat-box red-stat"><div class="stat-num" id="sRed">0m</div><div class="stat-lbl">🔴 無效消耗</div></div>
+      </div>
+      <div style="margin-top:10px">
+        <div style="font-size:.74rem;color:var(--ink-soft);margin-bottom:3px">🟢 核心學習比例</div>
+        <div class="bar-wrap"><div class="bar green" id="barG" style="width:0%"></div></div>
+        <div style="font-size:.74rem;color:var(--ink-soft);margin-top:7px;margin-bottom:3px">🔴 無效消耗比例</div>
+        <div class="bar-wrap"><div class="bar red" id="barR" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="p-card reveal">
+      <h3>🍅 番茄鐘 &amp; 📵 分心計數</h3>
+      <p class="desc">每完成 25 分鐘就點「＋」；每次想滑手機但忍住了，分心處記一筆（禁止拿手機！）</p>
+      <div class="ctr-row">
+        <div class="ctr-box">
+          <div class="ctr-lbl">🍅 完成番茄鐘</div>
+          <div class="ctr-num" id="pomNum">0</div>
+          <div class="ctr-btns">
+            <button class="ctr-btn minus" onclick="adj('pom',-1)">−</button>
+            <button class="ctr-btn plus" onclick="adj('pom',1)">＋</button>
+          </div>
+        </div>
+        <div class="ctr-box">
+          <div class="ctr-lbl">📵 分心衝動次數</div>
+          <div class="ctr-num danger" id="distNum">0</div>
+          <div class="ctr-btns">
+            <button class="ctr-btn minus" onclick="adj('dist',-1)">−</button>
+            <button class="ctr-btn plus-r ctr-btn" onclick="adj('dist',1)">＋</button>
+          </div>
+        </div>
+      </div>
+      <div class="tally" id="tally">—</div>
+      <div class="tally-note">↑ 分心計數器（每5次顯示「正」字，傳統計數法！）</div>
+    </div>
+
+    <div class="p-card reveal">
+      <h3>📆 間隔重複執行</h3>
+      <p class="desc">今天有做到艾賓浩斯複習排程嗎？</p>
+      <div class="chk-row" onclick="togChk('c1')">
+        <div class="chk-box" id="c1"></div>
+        <div class="chk-lbl"><strong>D+1 複習</strong>：快速瀏覽昨天錯題本（5分鐘）</div>
+      </div>
+      <div class="chk-row" onclick="togChk('c7')">
+        <div class="chk-box" id="c7"></div>
+        <div class="chk-lbl"><strong>D+7 複習</strong>：遮住答案自我檢測一週前筆記（10分鐘）</div>
+      </div>
+      <div class="chk-row" onclick="togChk('c21')">
+        <div class="chk-box" id="c21"></div>
+        <div class="chk-lbl"><strong>D+21 複習</strong>：核心概念融入模擬題（15分鐘）</div>
+      </div>
+    </div>
+
+    <div class="p-card reveal">
+      <h3>💡 費曼大腦輸出</h3>
+      <p class="desc">用一句連小學生都能聽懂的話，總結今天最難的一個概念。強迫主動提取！</p>
+      <textarea class="inp" id="feynman" placeholder='例：「氧化還原就像搶椅子遊戲——電子是椅子，搶到的是被還原，失去的是被氧化。」'></textarea>
+    </div>
+
+    <div class="p-card reveal">
+      <h3>🔍 睡前三點微覆盤</h3>
+      <p class="desc">花 3 分鐘，讓大腦在睡眠中鞏固今日正向記憶與反思。</p>
+      <p style="font-size:.82rem;font-weight:700;color:var(--amber);margin-bottom:5px">✨ Plus — 今日最高光時刻</p>
+      <textarea class="inp" id="plus" placeholder="今天做得最好的一件事是什麼？" style="min-height:60px"></textarea>
+      <p style="font-size:.82rem;font-weight:700;color:var(--red-c);margin-bottom:5px;margin-top:11px">⚠️ Delta — 時間流失的漏洞</p>
+      <textarea class="inp" id="delta" placeholder="哪個時段出現了無效消耗？原因是什麼？" style="min-height:60px"></textarea>
+      <p style="font-size:.82rem;font-weight:700;color:var(--teal);margin-bottom:5px;margin-top:11px">🎯 Action — 明日啟動的第一步</p>
+      <textarea class="inp" id="action" placeholder="明天一早要攻克的第一個「青蛙任務」是什麼？（要具體！）" style="min-height:60px"></textarea>
+    </div>
+
+    <button class="btn full" onclick="gotoAI()">🤖 前往 AI 覆盤診斷 →</button>
+    <div class="foot"><p>✨ <strong>Gina教室的AI奇蹟</strong><br>AI賦能｜老師的教學進化日常</p></div>
+  </div>
+</div>
+
+<!-- ══════════ SEC 3: AI REVIEW ══════════ -->
+<div class="sec" id="sec-ai">
+  <div class="planner">
+    <div class="sec-hdr narrow reveal" style="padding-left:0;padding-right:0">
+      <span class="eyebrow">AI Powered Review</span>
+      <h2 class="sec-title">Gemini AI 覆盤診斷</h2>
+      <p class="sec-desc">輸入 Gemini API Key，讓 AI 根據腦科學框架進行多維度診斷，給出客製化學習建議。</p>
+    </div>
+
+    <div class="p-card reveal">
+      <h3>📊 今日記錄摘要</h3>
+      <p class="desc">以下是你剛填寫的今日數據。確認後輸入 API Key 開始診斷。</p>
+      <div class="stats-row" id="aiStats"></div>
+      <div class="div"></div>
+      <div id="dataSummary" style="font-size:.85rem;color:var(--ink-soft);line-height:1.8"></div>
+    </div>
+
+    <div class="p-card reveal">
+      <h3>🔑 Gemini API Key</h3>
+      <p class="desc">Key 僅在此裝置本機使用，不會上傳至任何伺服器。請至 <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a> 取得免費 Key。</p>
+      <div class="api-wrap">
+        <input type="password" class="inp" id="apiKey" placeholder="AIza...（貼上你的 Gemini API Key）">
+        <button class="api-toggle" id="apiToggle" onclick="toggleApi()">顯示</button>
+      </div>
+      <div class="model-row">
+        <label>模型：</label>
+        <select id="modelSel">
+          <option value="gemini-2.5-flash">gemini-2.5-flash（免費快速 · 推薦）</option>
+          <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite（最省額度）</option>
+          <option value="gemini-2.5-pro">gemini-2.5-pro（最精準）</option>
+        </select>
+      </div>
+      <button class="prompt-btn" onclick="togglePrompt()">
+        <span>🔍</span>查看送給 AI 的診斷 Prompt（教師版）<span id="pArrow" style="margin-left:auto">▾</span>
+      </button>
+      <div class="prompt-box" id="promptBox"></div>
+      <div style="margin-top:14px">
+        <button class="btn full teal" onclick="runAI()">🧠 開始 AI 覆盤診斷</button>
+      </div>
+    </div>
+
+    <div class="loading" id="loading">
+      <p><span class="pulse">🧠</span> AI 正在分析你的時間記錄……</p>
+      <p style="font-size:.78rem;margin-top:6px;color:var(--ink-soft)">依據腦科學、行為經濟學與高效學習法進行多維度診斷</p>
+    </div>
+
+    <div class="ai-result" id="aiResult">
+      <div class="ai-rhdr">
+        <p class="eyebrow" style="font-size:.78rem;margin-bottom:3px">AI Powered Daily Review</p>
+        <h4 style="font-size:1rem;font-weight:700;color:var(--ink)">今日學習覆盤報告</h4>
+      </div>
+      <div id="aiContent"></div>
+      <div class="ai-footer">由 Gemini AI 驅動 ✕ 每日學習 × AI 診斷框架 | Gina教室的AI奇蹟</div>
+    </div>
+
+    <div class="err-box" id="errBox"></div>
+
+    <div class="foot" style="margin-top:24px">
+      <p>✨ <strong>Gina教室的AI奇蹟</strong><br>AI賦能｜老師的教學進化日常</p>
+      <p style="margin-top:4px">每日記錄 × AI診斷 × 持續進步</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const S={pom:0,dist:0,checks:{c1:false,c7:false,c21:false},blocks:{}};
+const PERIODS=[
+  {lbl:'清晨',tag:'其他',cls:'pt-other',s:6,e:8},
+  {lbl:'上午黃金期',tag:'⭐ 黃金專注期',cls:'pt-gold',s:8,e:12},
+  {lbl:'午間',tag:'💤 低谷修復期',cls:'pt-low',s:12,e:15},
+  {lbl:'下午黃金期',tag:'⭐ 黃金專注期',cls:'pt-gold',s:15,e:17},
+  {lbl:'傍晚',tag:'其他',cls:'pt-other',s:17,e:19},
+  {lbl:'晚間記憶期',tag:'🌙 記憶鞏固期',cls:'pt-mem',s:19,e:22},
+  {lbl:'夜間',tag:'其他',cls:'pt-other',s:22,e:24}
+];
+const BCLS=['','green','yellow','red'];
+const BICO=['',' 📗',' 📌',' 📵'];
+
+function buildLog(){
+  const w=document.getElementById('timeLog');w.innerHTML='';
+  PERIODS.forEach(p=>{
+    const pd=document.createElement('div');pd.className='t-period';
+    const lb=document.createElement('div');lb.className='t-period-lbl';
+    lb.innerHTML='<span>'+p.lbl+'</span><span class="period-tag '+p.cls+'">'+p.tag+'</span>';
+    pd.appendChild(lb);
+    const bs=document.createElement('div');bs.className='t-blocks';
+    for(let h=p.s;h<p.e;h++){
+      for(let m=0;m<60;m+=30){
+        const k=pad(h)+':'+pad(m);
+        const b=document.createElement('div');
+        b.className='tblk';b.dataset.k=k;
+        b.innerHTML='<span class="tblk-time">'+k+'</span><span class="tblk-icon"> </span>';
+        b.addEventListener('click',function(){cycleBlk(b,k);});
+        bs.appendChild(b);
+      }
+    }
+    pd.appendChild(bs);w.appendChild(pd);
+  });
+  updateStats();
+}
+
+function cycleBlk(b,k){
+  const c=S.blocks[k]||0,n=(c+1)%4;
+  S.blocks[k]=n;
+  b.className='tblk'+(BCLS[n]?' '+BCLS[n]:'');
+  b.querySelector('.tblk-icon').textContent=n?BICO[n]:' ';
+  updateStats();
+}
+
+function updateStats(){
+  let g=0,y=0,r=0;
+  Object.values(S.blocks).forEach(function(v){if(v===1)g++;else if(v===2)y++;else if(v===3)r++;});
+  function fmt(n){var h=Math.floor(n/2),m=(n%2)*30;return h?(m?h+'h'+m+'m':h+'h'):m+'m';}
+  document.getElementById('sGreen').textContent=fmt(g);
+  document.getElementById('sYellow').textContent=fmt(y);
+  document.getElementById('sRed').textContent=fmt(r);
+  var tot=g+y+r||1;
+  document.getElementById('barG').style.width=(g/tot*100)+'%';
+  document.getElementById('barR').style.width=(r/tot*100)+'%';
+}
+
+function pad(n){return String(n).padStart(2,'0');}
+
+function adj(t,d){
+  if(t==='pom'){S.pom=Math.max(0,S.pom+d);document.getElementById('pomNum').textContent=S.pom;}
+  else{S.dist=Math.max(0,S.dist+d);document.getElementById('distNum').textContent=S.dist;updateTally();}
+}
+
+function updateTally(){
+  var n=S.dist,f=Math.floor(n/5),r=n%5;
+  var p=['','一','二','三','亖'][r];
+  document.getElementById('tally').textContent='正'.repeat(f)+(p||'')||'—';
+}
+
+function togChk(id){
+  S.checks[id]=!S.checks[id];
+  var el=document.getElementById(id);
+  el.classList.toggle('checked',S.checks[id]);
+  el.textContent=S.checks[id]?'✓':'';
+}
+
+function switchTab(id,btn){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('sec-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='ai')refreshPreview();
+}
+
+function switchMod(k,btn){
+  var m={brain:'mp-brain',exec:'mp-exec',method:'mp-method',pdca:'mp-pdca',concepts:'mp-concepts'};
+  document.querySelectorAll('.mod-panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.mod-tab').forEach(function(b){b.classList.remove('active');});
+  document.getElementById(m[k]).classList.add('active');
+  btn.classList.add('active');
+}
+
+function gotoAI(){
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.nav-btn')[2].classList.add('active');
+  switchTab('ai',null);
+}
+
+function toggleApi(){
+  var inp=document.getElementById('apiKey'),btn=document.getElementById('apiToggle');
+  inp.type=inp.type==='password'?'text':'password';
+  btn.textContent=inp.type==='password'?'顯示':'隱藏';
+}
+
+function refreshPreview(){
+  var g=0,y=0,r=0;
+  Object.values(S.blocks).forEach(function(v){if(v===1)g++;else if(v===2)y++;else if(v===3)r++;});
+  function fmt(n){var h=Math.floor(n/2),m=(n%2)*30;return h?(m?h+'h'+m+'m':h+'h'):m+'m';}
+  document.getElementById('aiStats').innerHTML=
+    '<div class="stat-box green-stat"><div class="stat-num">'+fmt(g)+'</div><div class="stat-lbl">🟢 核心學習</div></div>'+
+    '<div class="stat-box yellow-stat"><div class="stat-num">'+fmt(y)+'</div><div class="stat-lbl">🟡 常規固定</div></div>'+
+    '<div class="stat-box red-stat"><div class="stat-num">'+fmt(r)+'</div><div class="stat-lbl">🔴 無效消耗</div></div>'+
+    '<div class="stat-box amber-stat"><div class="stat-num">'+S.pom+'</div><div class="stat-lbl">🍅 番茄鐘</div></div>';
+  function gv(id){return document.getElementById(id).value.trim();}
+  function cv(id){return S.checks[id]?'✅':'❌';}
+  document.getElementById('dataSummary').innerHTML=
+    (gv('frog1')?'<p>🐸 <b>青蛙1：</b>'+gv('frog1')+'</p>':'<p style="color:var(--red-c)">⚠️ 青蛙任務未填寫</p>')+
+    (gv('frog2')?'<p>🐸 <b>青蛙2：</b>'+gv('frog2')+'</p>':'')+
+    '<p>📵 分心：<b>'+S.dist+'</b>次 ／ 🍅 番茄鐘：<b>'+S.pom+'</b>個</p>'+
+    '<p>📆 D+1：'+cv('c1')+' ／ D+7：'+cv('c7')+' ／ D+21：'+cv('c21')+'</p>'+
+    (gv('feynman')?'<p>💡 <b>費曼：</b>'+gv('feynman')+'</p>':'<p style="color:var(--red-c)">⚠️ 費曼輸出未填寫</p>')+
+    (gv('plus')?'<p>✨ <b>Plus：</b>'+gv('plus')+'</p>':'')+
+    (gv('delta')?'<p>⚠️ <b>Delta：</b>'+gv('delta')+'</p>':'')+
+    (gv('action')?'<p>🎯 <b>Action：</b>'+gv('action')+'</p>':'');
+  var pb=document.getElementById('promptBox');
+  if(pb.classList.contains('open'))pb.textContent=buildPrompt();
+}
+
+function buildPrompt(){
+  var g=0,y=0,r=0,tL=[];
+  PERIODS.forEach(function(p){
+    var seg=[];
+    for(var h=p.s;h<p.e;h++){
+      for(var m=0;m<60;m+=30){
+        var k=pad(h)+':'+pad(m),v=S.blocks[k]||0;
+        if(v===1){g++;seg.push(k+'🟢');}
+        else if(v===2){y++;seg.push(k+'🟡');}
+        else if(v===3){r++;seg.push(k+'🔴');}
+        else seg.push(k+'⬜');
+      }
+    }
+    tL.push('【'+p.lbl+'（'+p.tag+'）】'+seg.join(' '));
+  });
+  var fm=function(n){return n*30+'分鐘';};
+  var eff=S.dist>0?(S.pom/S.dist).toFixed(2):S.pom>0?'∞（零分心！）':'0';
+  var gv=function(id){return document.getElementById(id).value.trim()||'（未填寫）';};
+  var cv=function(id){return S.checks[id]?'✅ 完成':'❌ 未執行';};
+  var tot=g+y+r||1;
+  return '你是一位深度熟悉「每日學習 × AI 診斷」系統的高中生學習教練 AI。\n'+
+'本系統融合了【腦科學（多巴胺、皮質醇、血清素、晝夜節律）】【行為經濟學（遊戲化、損失規避）】【高效學習法（間隔重複、費曼輸出、提取練習）】與【PDCA覆盤循環】。\n\n'+
+'請根據以下學生的今日記錄，進行深度多維度覆盤診斷，並提供客製化建議。\n\n'+
+'━━━━━━━━━ 今日學習記錄 ━━━━━━━━━\n'+
+'📅 日期：'+gv('planDate')+'\n\n'+
+'🐸 核心青蛙任務：\n  任務1：'+gv('frog1')+'\n  任務2：'+gv('frog2')+'\n\n'+
+'⏰ 三色時間分布：\n'+
+'  🟢 核心學習：'+fm(g)+'（'+Math.round(g/tot*100)+'%）\n'+
+'  🟡 常規固定：'+fm(y)+'（'+Math.round(y/tot*100)+'%）\n'+
+'  🔴 無效消耗：'+fm(r)+'（'+Math.round(r/tot*100)+'%）\n\n'+
+'詳細時間軸（⬜未記錄 🟢核心 🟡固定 🔴無效）：\n'+tL.join('\n')+'\n\n'+
+'🍅 完成番茄鐘：'+S.pom+' 個\n'+
+'📵 分心衝動次數：'+S.dist+' 次\n'+
+'📊 專注效率比（番茄鐘÷分心次數）：'+eff+'\n\n'+
+'📆 間隔重複執行：\n  D+1：'+cv('c1')+' ／ D+7：'+cv('c7')+' ／ D+21：'+cv('c21')+'\n\n'+
+'💡 費曼大腦輸出：「'+gv('feynman')+'」\n\n'+
+'🔍 睡前三點微覆盤：\n'+
+'  ✨ Plus（今日高光）：'+gv('plus')+'\n'+
+'  ⚠️ Delta（時間漏洞）：'+gv('delta')+'\n'+
+'  🎯 Action（明日第一步）：'+gv('action')+'\n\n'+
+'━━━━━━━━━ 五維診斷規準 ━━━━━━━━━\n\n'+
+'【維度一：晝夜節律執行度】\n'+
+'黃金專注期（08:00–11:30、15:00–17:00）是否安排了核心學習🟢？\n'+
+'低谷修復期（12:00–14:30）是否適當休息或進行低認知任務，而非強迫學習？\n'+
+'記憶鞏固期（19:30–22:00）是否有提取練習或複習？\n\n'+
+'【維度二：多巴胺任務顆粒度】\n'+
+'青蛙任務是否夠具體、有明確完成標準且能在20分鐘內完成？\n'+
+'是否符合「任務顆粒化」原則（例如從「讀英文」升級為「背5個單字並造句」）？\n\n'+
+'【維度三：專注品質診斷】\n'+
+'番茄鐘完成數與分心衝動次數的比值反映什麼樣的專注模式？\n'+
+'分心多發生在哪些時段（黃金期還是低谷期）？\n\n'+
+'【維度四：學習方法整合度】\n'+
+'費曼輸出是否真正用「超簡單的比喻」簡化了複雜概念，還是流於表面？\n'+
+'間隔重複是否有落實（D+1/D+7/D+21）？\n\n'+
+'【維度五：覆盤品質】\n'+
+'Plus/Delta/Action三點是否具體、有行動力？\n'+
+'Action是否是明天「立刻能執行的第一步」，而非模糊目標？\n\n'+
+'━━━━━━━━━ 輸出格式（請嚴格遵守）━━━━━━━━━\n'+
+'請用繁體中文，以下結構輸出。語氣要像一位真正關心學生的教練——溫暖鼓勵又直接誠實，有優點大力肯定，有問題直說但附上改善方法：\n\n'+
+'✨ **今日亮點**\n'+
+'（1-2句，具體指出這位學生今天做得好的「具體地方」，要有溫度和細節，不要空泛）\n\n'+
+'⚠️ **關鍵問題診斷**\n'+
+'（最多3個問題，每個附上腦科學或行為經濟學原理解析，讓學生理解「為什麼」這樣做有問題）\n\n'+
+'🧠 **腦科學深度解析**\n'+
+'（選一個最關鍵的問題，用腦科學機制——多巴胺/皮質醇/海馬迴/前額葉——解析這個行為模式的根本原因，以及如何利用大腦機制改善）\n\n'+
+'🎯 **明日三步行動建議**\n'+
+'（3個具體行動，每個要有：具體時間點＋具體方法＋預期效果。明天就能立刻執行！）\n\n'+
+'💪 **給你的專屬鼓勵**\n'+
+'（溫暖、真誠、針對這位學生今日的具體情況說話，像認識你多年的好教練，絕對不要制式化口號）';
+}
+
+var pOpen=false;
+function togglePrompt(){
+  pOpen=!pOpen;
+  document.getElementById('promptBox').classList.toggle('open',pOpen);
+  document.getElementById('pArrow').textContent=pOpen?'▴':'▾';
+  if(pOpen)document.getElementById('promptBox').textContent=buildPrompt();
+}
+
+async function runAI(){
+  var key=document.getElementById('apiKey').value.trim();
+  if(!key){showErr('⚠️ 請先輸入 Gemini API Key！');return;}
+  var model=document.getElementById('modelSel').value;
+  var prompt=buildPrompt();
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('aiResult').classList.remove('show');
+  document.getElementById('errBox').style.display='none';
+  try{
+    var res=await fetch(
+      'https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+key,
+      {method:'POST',headers:{'Content-Type':'application/json'},
+       body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.85,maxOutputTokens:2500,topP:0.9}})}
+    );
+    if(!res.ok){var e=await res.json();throw new Error(e.error&&e.error.message?e.error.message:'HTTP '+res.status);}
+    var data=await res.json();
+    var txt=data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts&&data.candidates[0].content.parts[0]?data.candidates[0].content.parts[0].text:null;
+    if(!txt)throw new Error('AI 回傳空白，請重試。');
+    showResult(txt);
+  }catch(e){
+    showErr('❌ 錯誤：'+e.message+'<br>請確認 API Key 正確，或嘗試切換模型後重試。');
+  }finally{
+    document.getElementById('loading').classList.remove('show');
+  }
+}
+
+function showResult(txt){
+  var sections=['✨','⚠️','🧠','🎯','💪'];
+  var html=txt.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>');
+  var parts=html.split('\n\n').map(function(block){
+    var trimmed=block.trim();
+    var isSection=sections.some(function(s){return trimmed.indexOf(s)===0;});
+    if(isSection){
+      var lines=trimmed.split('\n');
+      var title=lines[0];
+      var body=lines.slice(1).filter(function(l){return l.trim();}).join('<br>');
+      return '<div class="ai-section"><div class="ai-section-title">'+title+'</div>'+(body?'<div style="color:var(--ink-soft);font-size:.88rem;line-height:1.85">'+body+'</div>':'')+'</div>';
+    }
+    return '<p style="color:var(--ink-soft);font-size:.9rem">'+trimmed.replace(/\n/g,'<br>')+'</p>';
+  });
+  document.getElementById('aiContent').innerHTML=parts.join('');
+  document.getElementById('aiResult').classList.add('show');
+  setTimeout(function(){document.getElementById('aiResult').scrollIntoView({behavior:'smooth',block:'start'});},100);
+}
+
+function showErr(msg){
+  var el=document.getElementById('errBox');
+  el.innerHTML=msg;el.style.display='block';
+}
+
+var io=new IntersectionObserver(function(e){
+  e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('in');});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+
+window.addEventListener('scroll',function(){
+  document.getElementById('backTop').classList.toggle('show',window.scrollY>280);
+});
+
+document.addEventListener('DOMContentLoaded',function(){
+  var t=new Date(),y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');
+  document.getElementById('planDate').value=y+'-'+m+'-'+d;
+  buildLog();
+  updateTally();
+});
+
+function togC(hdr){
+  var body=hdr.nextElementSibling;
+  var arrow=hdr.querySelector('.c-arrow');
+  var isOpen=body.classList.contains('open');
+  document.querySelectorAll('.c-body.open').forEach(function(b){
+    b.classList.remove('open');
+    var a=b.previousElementSibling.querySelector('.c-arrow');
+    if(a)a.classList.remove('open');
+  });
+  if(!isOpen){body.classList.add('open');arrow.classList.add('open');}
+}
+function filterC(cat,btn){
+  document.querySelectorAll('.c-tag-filter').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.c-item').forEach(function(item){
+    item.style.display=(cat==='all'||item.dataset.cat===cat)?'':'none';
+  });
+}
+</script>
+</body>
+</html>

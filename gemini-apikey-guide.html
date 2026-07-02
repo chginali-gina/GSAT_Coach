@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>如何申請 Gemini API Key | Gina教室的AI奇蹟</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FDF8F1;--bg-warm:#F7EFE3;--card:#FFFFFF;
+  --amber:#D97706;--amber-deep:#B45309;--amber-dark:#92400E;
+  --teal:#0F766E;--ink:#2E2419;--ink-soft:#6B5D4F;--line:#E8DCCB;
+  --shadow:0 4px 20px rgba(146,64,14,.08);--shadow-lg:0 12px 40px rgba(146,64,14,.12);
+  --radius:18px;--radius-sm:12px;
+  --red-c:#dc2626;--red-lt:#fee2e2;--green:#16a34a;--green-lt:#dcfce7;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Serif TC',serif;background:var(--bg);color:var(--ink);font-size:1rem;line-height:1.85}
+a{color:var(--teal)}
+.display{font-family:'Playfair Display',serif}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+
+.hero{background:linear-gradient(155deg,var(--bg),var(--bg-warm));padding:48px 20px 36px;text-align:center;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:'Playfair Display',serif;color:var(--amber);letter-spacing:.08em;font-size:.95rem;margin-bottom:8px;display:block}
+.hero h1{font-size:clamp(1.6rem,5vw,2.4rem);font-weight:700;line-height:1.3;margin-bottom:12px}
+.hero p{color:var(--ink-soft);font-size:.92rem;max-width:480px;margin:0 auto;line-height:1.75}
+.hero .free-tag{display:inline-block;background:var(--green-lt);color:#15803d;border:1px solid var(--green);padding:4px 14px;border-radius:999px;font-size:.8rem;font-weight:700;margin-top:14px}
+
+.sect{padding:28px 0 8px}
+.intro-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);margin:24px 0}
+.intro-card h2{font-size:1rem;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.intro-card p{color:var(--ink-soft);font-size:.9rem;line-height:1.8}
+
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 20px;box-shadow:var(--shadow);margin-bottom:16px;position:relative;overflow:hidden}
+.step::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--amber)}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--amber);color:#fff;border-radius:50%;font-family:'Playfair Display',serif;font-weight:700;font-size:1.1rem;margin-bottom:10px}
+.step h3{font-size:1.05rem;font-weight:700;margin-bottom:8px}
+.step p{color:var(--ink-soft);font-size:.92rem;line-height:1.8;margin-bottom:8px}
+.step .mock{background:var(--bg-warm);border:1.5px dashed var(--line);border-radius:var(--radius-sm);padding:14px;margin:12px 0;text-align:center}
+.btn-mock{display:inline-block;background:var(--amber);color:#fff;padding:8px 20px;border-radius:8px;font-size:.85rem;font-weight:700;margin:4px}
+.btn-mock.blue{background:#2563eb}
+.btn-mock.outline{background:transparent;border:1.5px solid var(--amber);color:var(--amber)}
+.mock-label{font-size:.75rem;color:var(--ink-soft);margin-top:8px}
+.key-mock{font-family:monospace;background:#2E2419;color:#fbbf24;padding:10px 14px;border-radius:8px;font-size:.8rem;letter-spacing:.5px;display:inline-block;margin-top:6px;word-break:break-all}
+.tip{background:linear-gradient(135deg,#fff8f0,#fff);border-left:3px solid var(--teal);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:11px 14px;margin-top:10px;font-size:.85rem;color:var(--ink-soft);line-height:1.7}
+.tip strong{color:var(--teal)}
+.warn{background:var(--red-lt);border-left:3px solid var(--red-c);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:11px 14px;margin-top:10px;font-size:.85rem;color:#991b1b;line-height:1.7}
+.warn strong{color:var(--red-c)}
+.link-box{display:inline-flex;align-items:center;gap:6px;background:var(--bg-warm);border:1px solid var(--line);border-radius:8px;padding:7px 13px;font-family:monospace;font-size:.82rem;color:var(--teal);margin:6px 0;word-break:break-all}
+
+.section-title{font-size:1.3rem;font-weight:700;margin:32px 0 4px;text-align:center}
+.section-title::after{content:'';display:block;width:40px;height:3px;background:var(--amber);margin:8px auto 0;border-radius:2px}
+.section-sub{text-align:center;color:var(--ink-soft);font-size:.85rem;margin-bottom:8px}
+
+.faq{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);margin-bottom:8px;overflow:hidden}
+.faq-q{padding:13px 16px;cursor:pointer;display:flex;align-items:center;gap:9px;font-weight:700;font-size:.9rem;-webkit-tap-highlight-color:transparent}
+.faq-q .qa{color:var(--amber);flex-shrink:0}
+.faq-q .arr{margin-left:auto;color:var(--amber);transition:transform .2s}
+.faq-q .arr.open{transform:rotate(180deg)}
+.faq-a{display:none;padding:0 16px 14px 38px;font-size:.86rem;color:var(--ink-soft);line-height:1.8}
+.faq-a.open{display:block}
+
+.checklist{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin:20px 0}
+.checklist h3{font-size:1rem;font-weight:700;margin-bottom:12px}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.88rem;color:var(--ink-soft)}
+.check-item:last-child{border-bottom:none}
+.check-item .ck{color:var(--green);font-weight:700;flex-shrink:0}
+
+.foot{text-align:center;padding:30px 20px 24px;color:var(--ink-soft);font-size:.82rem;border-top:1px solid var(--line);margin-top:30px}
+.foot strong{color:var(--amber)}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s,transform .7s}
+.reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<section class="hero reveal">
+  <span class="eyebrow display">Step by Step Guide</span>
+  <h1>如何申請<br>Gemini API Key 🔑</h1>
+  <p>3 分鐘搞定，讓你的學測陪跑系統<br>啟動 AI 教練診斷功能</p>
+  <span class="free-tag">✓ 完全免費 · 免綁信用卡</span>
+</section>
+
+<div class="wrap">
+
+  <div class="intro-card reveal">
+    <h2>🤔 什麼是 API Key？</h2>
+    <p>API Key 就像一把「鑰匙」，讓我們的陪跑系統能去敲 Google Gemini AI 的門，請它幫你分析學習狀況。每個人要有自己的鑰匙，資料才不會混在一起。這把鑰匙只存在你自己的手機／電腦裡，不會被別人看到。</p>
+  </div>
+
+  <div class="section-title reveal">申請步驟</div>
+  <div class="section-sub reveal">跟著做，每一步都有畫面說明</div>
+
+  <div class="step reveal">
+    <div class="step-num display">1</div>
+    <h3>用 Google 帳號登入 AI Studio</h3>
+    <p>打開瀏覽器，前往 Google AI Studio（用你的 Gmail 帳號登入就好，學校 Google 帳號或私人 Gmail 都可以）：</p>
+    <div class="link-box">🔗 aistudio.google.com</div>
+    <div class="mock">
+      <span class="btn-mock">Get Started</span>
+      <div class="mock-label">↑ 第一次進入點這個藍色按鈕，選擇你的 Google 帳號</div>
+    </div>
+    <div class="tip"><strong>💡 提示：</strong>第一次使用會跳出「同意服務條款」，勾選同意後按 <b>Continue</b> 即可。系統會問你所在國家，選 <b>Taiwan</b>。</div>
+  </div>
+
+  <div class="step reveal">
+    <div class="step-num display">2</div>
+    <h3>點左側選單的「Get API Key」</h3>
+    <p>登入後，看畫面<b>左邊的選單</b>，往下找到一個鑰匙圖示的選項：</p>
+    <div class="mock">
+      <span class="btn-mock outline">🔑 Get API Key</span>
+      <div class="mock-label">↑ 通常在左側選單偏下方的位置</div>
+    </div>
+    <p>點下去就會進到「API Keys」管理頁面。</p>
+  </div>
+
+  <div class="step reveal">
+    <div class="step-num display">3</div>
+    <h3>點右上角「Create API Key」建立鑰匙</h3>
+    <p>在 API Keys 頁面的<b>右上角</b>，點藍色按鈕：</p>
+    <div class="mock">
+      <span class="btn-mock blue">+ Create API Key</span>
+      <div class="mock-label">↑ 右上角藍色按鈕</div>
+    </div>
+    <p>它會請你選一個「專案（Project）」。如果你是第一次用，直接選 <b>Create API key in a new project</b>（在新專案建立）最簡單。</p>
+    <div class="warn"><strong>⚠️ 如果出現 "Project creation is disabled" 錯誤：</strong>這是 Google 偶爾的限制。解法：先到 <b>console.cloud.google.com</b> 隨便建一個新專案（取名如 my-gemini，不用綁信用卡），再回到這裡選那個專案即可。</div>
+  </div>
+
+  <div class="step reveal">
+    <div class="step-num display">4</div>
+    <h3>複製你的鑰匙！</h3>
+    <p>建立成功後，畫面會出現一串以 <b>AIzaSy</b> 開頭的長字串，這就是你的 API Key。點旁邊的<b>複製圖示 📋</b>把它複製起來：</p>
+    <div class="mock">
+      <div class="key-mock">AIzaSyXXXXXXXX–你的專屬鑰匙–XXXXXXXX</div>
+      <div class="mock-label">↑ 長這樣，按右邊複製鈕</div>
+    </div>
+    <div class="warn"><strong>🔒 重要：</strong>這把鑰匙等於你的帳號授權，<b>不要截圖貼到網路上、不要傳給別人</b>。貼到自己的備忘錄存好就行。</div>
+  </div>
+
+  <div class="step reveal">
+    <div class="step-num display">5</div>
+    <h3>貼進學測陪跑系統，完成！</h3>
+    <p>回到你的「學測陪跑系統」網頁，點下方的 <b>🤖 AI教練</b> 分頁，把剛剛複製的鑰匙貼進「Gemini API Key」欄位，按 <b>啟動 AI 教練診斷</b>，就能得到你的專屬學習報告了 🎉</p>
+    <div class="tip"><strong>✓ 一次設定，長期使用：</strong>鑰匙會記在你的瀏覽器裡，之後同一台裝置、同一個瀏覽器打開就不用再貼。</div>
+  </div>
+
+  <div class="section-title reveal">常見問題 FAQ</div>
+
+  <div class="faq reveal">
+    <div class="faq-q" onclick="togFaq(this)"><span class="qa">Q</span>真的免費嗎？會不會被扣錢？<span class="arr">▾</span></div>
+    <div class="faq-a">免費版完全不用綁信用卡，也不會扣錢。Google 提供的免費額度（每分鐘約 10 次、每天約 250 次請求）對於每天做一次學習覆盤來說綽綽有餘。除非你主動去「設定付款」綁卡升級，否則不可能產生費用。</div>
+  </div>
+
+  <div class="faq reveal">
+    <div class="faq-q" onclick="togFaq(this)"><span class="qa">Q</span>申請需要多久？要審核嗎？<span class="arr">▾</span></div>
+    <div class="faq-a">不用審核，整個流程 3 分鐘內完成，鑰匙是「即時」產生的，複製貼上馬上就能用。</div>
+  </div>
+
+  <div class="faq reveal">
+    <div class="faq-q" onclick="togFaq(this)"><span class="qa">Q</span>一個帳號可以申請幾把鑰匙？<span class="arr">▾</span></div>
+    <div class="faq-a">同一個 Google 帳號可以建立多把（最多 10 個專案）。但對學測陪跑系統來說，<b>一把就夠用了</b>。</div>
+  </div>
+
+  <div class="faq reveal">
+    <div class="faq-q" onclick="togFaq(this)"><span class="qa">Q</span>貼上鑰匙後出現錯誤怎麼辦？<span class="arr">▾</span></div>
+    <div class="faq-a">先確認三件事：① 鑰匙完整複製（開頭是 AIzaSy，沒有多空格）② 你的網路正常 ③ 試著在系統裡<b>切換成 gemini-2.5-flash-lite 模型</b>再試一次。若還是不行，可能是當天免費額度用完，隔天會重置。</div>
+  </div>
+
+  <div class="faq reveal">
+    <div class="faq-q" onclick="togFaq(this)"><span class="qa">Q</span>換手機 / 換電腦鑰匙會不見嗎？<span class="arr">▾</span></div>
+    <div class="faq-a">鑰匙存在你「當下使用的瀏覽器」裡，換裝置或清除瀏覽紀錄後需要重貼一次。建議把鑰匙存在自己的備忘錄裡備用。</div>
+  </div>
+
+  <div class="checklist reveal">
+    <h3>✅ 完成檢查清單</h3>
+    <div class="check-item"><span class="ck">✓</span>已用 Google 帳號登入 AI Studio</div>
+    <div class="check-item"><span class="ck">✓</span>找到並點了左側「Get API Key」</div>
+    <div class="check-item"><span class="ck">✓</span>用「Create API Key」建立了鑰匙</div>
+    <div class="check-item"><span class="ck">✓</span>複製了 AIzaSy 開頭的字串並存好</div>
+    <div class="check-item"><span class="ck">✓</span>貼進陪跑系統，成功跑出 AI 報告</div>
+  </div>
+
+  <div class="foot reveal">
+    <p>✨ <strong>Gina教室的AI奇蹟</strong><br>AI賦能｜老師的教學進化日常</p>
+    <p style="margin-top:6px;font-size:.75rem">本教學依 2026 年 6 月 Google AI Studio 介面製作，若畫面有出入請以官方最新版為準</p>
+  </div>
+
+</div>
+
+<script>
+function togFaq(q){
+  var a=q.nextElementSibling;
+  var arr=q.querySelector('.arr');
+  var open=a.classList.contains('open');
+  document.querySelectorAll('.faq-a.open').forEach(function(x){x.classList.remove('open');});
+  document.querySelectorAll('.faq-q .arr.open').forEach(function(x){x.classList.remove('open');});
+  if(!open){a.classList.add('open');arr.classList.add('open');}
+}
+var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('in');});},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+</script>
+</body>
+</html>
