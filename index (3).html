@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gina 的學習工具箱 | Gina教室的AI奇蹟</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FDF8F1;--bg-warm:#F7EFE3;--card:#FFFFFF;
+  --amber:#D97706;--amber-deep:#B45309;--amber-dark:#92400E;
+  --teal:#0F766E;--ink:#2E2419;--ink-soft:#6B5D4F;--line:#E8DCCB;
+  --shadow:0 4px 20px rgba(146,64,14,.08);--shadow-lg:0 12px 40px rgba(146,64,14,.12);
+  --radius:20px;--radius-sm:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Serif TC',serif;background:var(--bg);color:var(--ink);font-size:1rem;line-height:1.8;min-height:100vh}
+a{text-decoration:none;color:inherit}
+.display{font-family:'Playfair Display',serif}
+.wrap{max-width:680px;margin:0 auto;padding:0 20px}
+
+/* HERO */
+.hero{background:linear-gradient(155deg,var(--bg),var(--bg-warm));padding:56px 20px 40px;text-align:center;border-bottom:1px solid var(--line)}
+.logo-badge{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;background:linear-gradient(135deg,var(--amber),var(--amber-deep));border-radius:20px;font-size:2rem;margin-bottom:16px;box-shadow:var(--shadow-lg)}
+.eyebrow{font-family:'Playfair Display',serif;color:var(--amber);letter-spacing:.1em;font-size:.9rem;margin-bottom:8px;display:block}
+.hero h1{font-size:clamp(1.7rem,5.5vw,2.6rem);font-weight:700;line-height:1.3;margin-bottom:12px}
+.hero p{color:var(--ink-soft);font-size:.95rem;max-width:460px;margin:0 auto;line-height:1.75}
+
+/* TOOL CARDS */
+.tools{padding:32px 0 8px}
+.tool-card{display:block;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);margin-bottom:16px;transition:transform .25s,box-shadow .25s;position:relative;overflow:hidden}
+.tool-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.tool-card:active{transform:scale(.98)}
+.tool-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px}
+.tool-card.c1::before{background:var(--amber)}
+.tool-card.c2::before{background:var(--teal)}
+.tool-card.c3::before{background:#7C3AED}
+.tool-card.c4::before{background:#F97316}
+.tool-head{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.tool-icon{flex-shrink:0;width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem}
+.c1 .tool-icon{background:#fef3c7}
+.c2 .tool-icon{background:#ccfbf1}
+.c3 .tool-icon{background:#ede9fe}
+.c4 .tool-icon{background:#ffedd5}
+.tool-title{flex:1}
+.tool-title h3{font-size:1.15rem;font-weight:700;line-height:1.3}
+.tool-title .tag{display:inline-block;font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:999px;margin-top:4px}
+.c1 .tag{background:#fef3c7;color:var(--amber-dark)}
+.c2 .tag{background:#ccfbf1;color:#065f46}
+.c3 .tag{background:#ede9fe;color:#5b21b6}
+.c4 .tag{background:#ffedd5;color:#9a3412}
+.tool-card p{color:var(--ink-soft);font-size:.88rem;line-height:1.75;margin-bottom:12px}
+.tool-feats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.feat{font-size:.72rem;background:var(--bg-warm);border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--ink-soft)}
+.tool-cta{display:flex;align-items:center;justify-content:space-between}
+.cta-text{font-size:.85rem;font-weight:700}
+.c1 .cta-text{color:var(--amber)}
+.c2 .cta-text{color:var(--teal)}
+.c3 .cta-text{color:#7C3AED}
+.c4 .cta-text{color:#EA580C}
+.cta-arrow{font-size:1.1rem;transition:transform .2s}
+.tool-card:hover .cta-arrow{transform:translateX(5px)}
+
+/* QUICK START */
+.quickstart{background:linear-gradient(135deg,#fff8f0,#fff);border:1.5px solid var(--amber);border-radius:var(--radius);padding:20px 22px;margin:8px 0 24px;box-shadow:var(--shadow)}
+.quickstart h3{font-size:1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.qs-step{display:flex;align-items:flex-start;gap:11px;padding:7px 0;font-size:.88rem;color:var(--ink-soft);line-height:1.7}
+.qs-num{flex-shrink:0;width:24px;height:24px;background:var(--amber);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;font-family:'Playfair Display',serif}
+
+/* FOOTER */
+.foot{text-align:center;padding:32px 20px 28px;color:var(--ink-soft);font-size:.85rem;border-top:1px solid var(--line);margin-top:24px}
+.foot strong{color:var(--amber)}
+.foot .social{margin-top:10px;font-size:.8rem}
+
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s,transform .7s}
+.reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<section class="hero reveal">
+  <div class="logo-badge display">✨</div>
+  <span class="eyebrow display">Learning Toolbox</span>
+  <h1>Gina 的學習工具箱</h1>
+  <p>用腦科學與 AI，幫你把時間變成成績<br>選一個工具開始吧 👇</p>
+</section>
+
+<div class="wrap">
+  <div class="tools">
+
+    <a href="gina-gsat-coach.html" class="tool-card c1 reveal">
+      <div class="tool-head">
+        <div class="tool-icon">🎯</div>
+        <div class="tool-title">
+          <h3>學測陪跑系統</h3>
+          <span class="tag">高三主力工具</span>
+        </div>
+      </div>
+      <p>專為高三設計的暑假學測備考教練。倒數計時、週課表規劃、各科戰況追蹤，搭配 Gemini AI 給你個人化的備考策略診斷。</p>
+      <div class="tool-feats">
+        <span class="feat">⏱️ 學測倒數</span>
+        <span class="feat">📅 週課表</span>
+        <span class="feat">📚 科目追蹤</span>
+        <span class="feat">🤖 AI 教練</span>
+      </div>
+      <div class="tool-cta">
+        <span class="cta-text">開始備考陪跑</span>
+        <span class="cta-arrow">→</span>
+      </div>
+    </a>
+
+    <a href="gina-holistic-time-system.html" class="tool-card c2 reveal">
+      <div class="tool-head">
+        <div class="tool-icon">📊</div>
+        <div class="tool-title">
+          <h3>每日學習 × AI 診斷</h3>
+          <span class="tag">日常時間管理</span>
+        </div>
+      </div>
+      <p>每天記錄你的時間運用——三色時間軸、番茄鐘、分心計數、費曼輸出，最後讓 AI 依腦科學框架診斷你這一天，給出改善建議。</p>
+      <div class="tool-feats">
+        <span class="feat">🎨 三色時間軸</span>
+        <span class="feat">🍅 番茄鐘</span>
+        <span class="feat">💡 費曼輸出</span>
+        <span class="feat">🤖 AI 覆盤</span>
+      </div>
+      <div class="tool-cta">
+        <span class="cta-text">記錄今天</span>
+        <span class="cta-arrow">→</span>
+      </div>
+    </a>
+
+    <a href="gsat-8week-challenge.html" class="tool-card c4 reveal">
+      <div class="tool-head">
+        <div class="tool-icon">🔥</div>
+        <div class="tool-title">
+          <h3>8 週陪跑挑戰</h3>
+          <span class="tag">遊戲化 · 揪團拚</span>
+        </div>
+      </div>
+      <p>把備考變成一場闖關遊戲！每日打卡累積連續火焰、完成任務賺積分、兌換獎勵，還能看班級進步榜、在心得牆互相加油。</p>
+      <div class="tool-feats">
+        <span class="feat">🔥 連續打卡</span>
+        <span class="feat">⭐ 積分獎勵</span>
+        <span class="feat">🏆 進步榜</span>
+        <span class="feat">💬 心得牆</span>
+      </div>
+      <div class="tool-cta">
+        <span class="cta-text">加入挑戰</span>
+        <span class="cta-arrow">→</span>
+      </div>
+    </a>
+
+    <a href="gemini-apikey-guide.html" class="tool-card c3 reveal">
+      <div class="tool-head">
+        <div class="tool-icon">🔑</div>
+        <div class="tool-title">
+          <h3>如何申請 Gemini API Key</h3>
+          <span class="tag">必看 · 先做這個</span>
+        </div>
+      </div>
+      <p>上面兩個工具的 AI 功能都需要一把免費的「鑰匙」。3 分鐘圖文教學，跟著做就能申請，完全免費、免綁信用卡。</p>
+      <div class="tool-feats">
+        <span class="feat">⏱️ 3 分鐘</span>
+        <span class="feat">💰 完全免費</span>
+        <span class="feat">📖 圖文步驟</span>
+        <span class="feat">❓ FAQ</span>
+      </div>
+      <div class="tool-cta">
+        <span class="cta-text">看申請教學</span>
+        <span class="cta-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="quickstart reveal">
+    <h3>🚀 第一次使用？三步驟上手</h3>
+    <div class="qs-step"><span class="qs-num">1</span><span>先看「<b>如何申請 Gemini API Key</b>」，拿到你的免費鑰匙</span></div>
+    <div class="qs-step"><span class="qs-num">2</span><span>打開「<b>學測陪跑系統</b>」，完成初次設定（名字、目標、各科級分）</span></div>
+    <div class="qs-step"><span class="qs-num">3</span><span>到「AI 教練」分頁貼上鑰匙，得到你的專屬備考診斷 🎉</span></div>
+  </div>
+
+  <div class="foot reveal">
+    <p>✨ <strong>Gina教室的AI奇蹟</strong><br>AI賦能｜老師的教學進化日常</p>
+    <p class="social">用科學的方法，陪你走過每一段學習路 💪</p>
+  </div>
+</div>
+
+<script>
+var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('in');});},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+</script>
+</body>
+</html>
