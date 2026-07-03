@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>老師後台 | 8週陪跑</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FDF8F1;--bg-warm:#F7EFE3;--card:#fff;--amber:#D97706;--amber-deep:#B45309;--teal:#0F766E;--ink:#2E2419;--ink-soft:#6B5D4F;--line:#E8DCCB;--shadow:0 4px 20px rgba(146,64,14,.08);--red:#dc2626;--green:#16a34a;--radius:16px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Serif TC',serif;background:var(--bg);color:var(--ink);line-height:1.7;padding:20px 16px 40px}
+.wrap{max-width:640px;margin:0 auto}
+h1{font-size:1.4rem;font-weight:700;margin-bottom:4px}
+.sub{font-size:.85rem;color:var(--ink-soft);margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 16px;box-shadow:var(--shadow);margin-bottom:16px}
+.inp{width:100%;padding:10px 13px;border:1.5px solid var(--line);border-radius:10px;font-family:'Noto Serif TC',serif;font-size:.9rem;background:var(--bg);outline:none;margin-bottom:10px}
+.inp:focus{border-color:var(--amber)}
+.btn{display:inline-flex;align-items:center;gap:6px;background:var(--amber);color:#fff;font-weight:600;padding:10px 22px;border-radius:999px;border:none;cursor:pointer;font-family:'Noto Serif TC',serif;font-size:.88rem}
+.btn:hover{background:var(--amber-deep)}
+.btn.full{width:100%}.btn.sm{padding:6px 14px;font-size:.78rem}
+.btn.green{background:var(--green)}.btn.red{background:var(--red)}.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink-soft)}
+.sec-title{font-size:1rem;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.badge-n{background:var(--amber);color:#fff;border-radius:999px;font-size:.72rem;padding:1px 9px}
+.item{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:9px;background:var(--bg-warm)}
+.item-head{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.item-name{font-weight:700;font-size:.86rem}
+.item-tag{font-size:.65rem;background:#fff;border:1px solid var(--line);border-radius:999px;padding:1px 8px;color:var(--ink-soft)}
+.item-text{font-size:.85rem;color:var(--ink);margin-bottom:8px;white-space:pre-wrap}
+.item-btns{display:flex;gap:7px}
+.empty{text-align:center;color:var(--ink-soft);padding:18px;font-size:.85rem}
+.hidden{display:none}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 20px;border-radius:999px;font-size:.85rem;opacity:0;transition:opacity .3s;pointer-events:none;z-index:100}
+.toast.show{opacity:1}
+.spin{display:inline-block;animation:sp 1s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.foot{text-align:center;font-size:.78rem;color:var(--ink-soft);margin-top:20px}
+.foot strong{color:var(--amber)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎓 老師後台</h1>
+  <p class="sub">審核心得牆貼文、核發實體獎勵。8週陪跑挑戰 · Gina教室的AI奇蹟</p>
+
+  <div class="card" id="loginCard">
+    <div class="sec-title">🔐 老師登入</div>
+    <input class="inp" id="pc" type="password" placeholder="輸入後台密碼">
+    <button class="btn full" onclick="login()">登入</button>
+    <p style="font-size:.72rem;color:var(--ink-soft);margin-top:8px">密碼在 GAS 程式的 CONFIG.TEACHER_PASSCODE 設定（預設 gina2027，請記得改掉）</p>
+  </div>
+
+  <div id="panel" class="hidden">
+    <div class="card">
+      <div class="sec-title">📝 待審核心得 <span class="badge-n" id="ppN">0</span></div>
+      <div id="pendingPosts"><div class="empty">載入中…</div></div>
+    </div>
+    <div class="card">
+      <div class="sec-title">🎁 待核發獎勵 <span class="badge-n" id="prN">0</span></div>
+      <div id="pendingRewards"><div class="empty">載入中…</div></div>
+    </div>
+    <button class="btn ghost full" onclick="refresh()">🔄 重新整理</button>
+  </div>
+
+  <div class="foot"><p>✨ <strong>Gina教室的AI奇蹟</strong><br>AI賦能｜老師的教學進化日常</p></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ════ 貼上你的 GAS 網址（跟學生端同一個）════ */
+var API_URL='PASTE_YOUR_GAS_WEB_APP_URL_HERE';
+/* ═══════════════════════════════════════════ */
+var PC='';
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2000);}
+function api(action,data){data=data||{};data.action=action;return fetch(API_URL,{method:'POST',body:JSON.stringify(data)}).then(function(r){return r.json();});}
+function esc(s){return String(s==null?'':s).replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function login(){
+  PC=document.getElementById('pc').value.trim();
+  if(!PC){toast('請輸入密碼');return;}
+  if(API_URL.indexOf('PASTE_YOUR')>=0){toast('尚未設定 GAS 網址');return;}
+  api('teacherData',{passcode:PC}).then(function(res){
+    if(res.ok){document.getElementById('loginCard').classList.add('hidden');document.getElementById('panel').classList.remove('hidden');renderData(res);}
+    else toast(res.error||'密碼錯誤');
+  }).catch(function(){toast('連線失敗');});
+}
+function refresh(){api('teacherData',{passcode:PC}).then(renderData).catch(function(){toast('連線失敗');});}
+function renderData(res){
+  if(!res.ok){toast(res.error||'讀取失敗');return;}
+  var posts=res.pendingPosts||[];var rewards=res.pendingRewards||[];
+  document.getElementById('ppN').textContent=posts.length;
+  document.getElementById('prN').textContent=rewards.length;
+  // posts
+  if(posts.length===0){document.getElementById('pendingPosts').innerHTML='<div class="empty">目前沒有待審核貼文 👍</div>';}
+  else{
+    var ph='';posts.forEach(function(p){
+      ph+='<div class="item"><div class="item-head"><span class="item-name">'+esc(p.nickname)+'</span><span class="item-tag">'+esc(p.tag)+'</span></div>'+
+        '<div class="item-text">'+esc(p.text)+'</div>'+
+        '<div class="item-btns"><button class="btn green sm" onclick="decide(\''+p.postId+'\',\'ok\')">✓ 通過</button>'+
+        '<button class="btn red sm" onclick="decide(\''+p.postId+'\',\'reject\')">✕ 退回</button></div></div>';
+    });
+    document.getElementById('pendingPosts').innerHTML=ph;
+  }
+  // rewards
+  if(rewards.length===0){document.getElementById('pendingRewards').innerHTML='<div class="empty">目前沒有待核發獎勵 👍</div>';}
+  else{
+    var rh='';rewards.forEach(function(r){
+      rh+='<div class="item"><div class="item-head"><span class="item-name">'+esc(r.nickname)+'</span><span class="item-tag">'+r.cost+' 分</span></div>'+
+        '<div class="item-text">兌換：'+esc(r.rewardName)+'</div>'+
+        '<div class="item-btns"><button class="btn green sm" onclick="fulfill(\''+r.rewardId+'\')">✓ 已核發</button></div></div>';
+    });
+    document.getElementById('pendingRewards').innerHTML=rh;
+  }
+}
+function decide(postId,decision){
+  api('approvePost',{passcode:PC,postId:postId,decision:decision}).then(function(res){
+    if(res.ok){toast(decision==='ok'?'✅ 已通過':'已退回');refresh();}else toast(res.error||'失敗');
+  });
+}
+function fulfill(rewardId){
+  api('fulfillReward',{passcode:PC,rewardId:rewardId}).then(function(res){
+    if(res.ok){toast('✅ 已標記核發');refresh();}else toast(res.error||'失敗');
+  });
+}
+</script>
+</body>
+</html>
