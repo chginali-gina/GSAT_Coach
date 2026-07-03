@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8 週陪跑挑戰 | Gina教室的AI奇蹟</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FDF8F1;--bg-warm:#F7EFE3;--card:#FFFFFF;
+  --amber:#D97706;--amber-deep:#B45309;--amber-dark:#92400E;
+  --teal:#0F766E;--ink:#2E2419;--ink-soft:#6B5D4F;--line:#E8DCCB;
+  --shadow:0 4px 20px rgba(146,64,14,.08);--shadow-lg:0 12px 40px rgba(146,64,14,.12);
+  --radius:18px;--radius-sm:12px;
+  --fire:#F97316;--gold:#EAB308;--purple:#7C3AED;--green:#16a34a;--green-lt:#dcfce7;--red:#dc2626;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Serif TC',serif;background:var(--bg);color:var(--ink);font-size:.95rem;line-height:1.8;padding-bottom:72px}
+a{color:var(--teal)}
+.display{font-family:'Playfair Display',serif}
+.wrap{max-width:680px;margin:0 auto;padding:0 16px}
+
+/* SETUP */
+#setup{position:fixed;inset:0;background:rgba(46,36,25,.88);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
+#setup.hide{display:none}
+.setup-box{background:var(--card);border-radius:var(--radius);padding:26px 22px;max-width:400px;width:100%}
+.setup-box h2{font-size:1.2rem;font-weight:700;margin-bottom:6px}
+.setup-box p{font-size:.85rem;color:var(--ink-soft);margin-bottom:16px;line-height:1.7}
+.inp{width:100%;padding:10px 13px;border:1.5px solid var(--line);border-radius:var(--radius-sm);font-family:'Noto Serif TC',serif;font-size:.9rem;color:var(--ink);background:var(--bg);outline:none;margin-bottom:10px}
+.inp:focus{border-color:var(--amber)}
+.inp-label{font-size:.78rem;font-weight:700;color:var(--ink-soft);margin-bottom:4px}
+
+/* HERO */
+.hero{background:linear-gradient(155deg,var(--bg),var(--bg-warm));padding:26px 16px 20px;text-align:center;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:'Playfair Display',serif;color:var(--amber);letter-spacing:.08em;font-size:.85rem;display:block;margin-bottom:4px}
+.hero h1{font-size:1.5rem;font-weight:700;line-height:1.3}
+.hi-name{color:var(--amber)}
+
+/* STAT STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.stat-c{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px 6px;box-shadow:var(--shadow)}
+.stat-c .n{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;line-height:1}
+.stat-c .l{font-size:.66rem;color:var(--ink-soft);margin-top:3px}
+.n.fire{color:var(--fire)}.n.pt{color:var(--amber)}.n.wk{color:var(--purple)}
+
+/* NAV */
+.bot-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;z-index:90;box-shadow:0 -4px 14px rgba(146,64,14,.08)}
+.nav-btn{flex:1;padding:8px 2px;text-align:center;cursor:pointer;border:none;background:transparent;color:var(--ink-soft);font-family:'Noto Serif TC',serif;font-size:.66rem;display:flex;flex-direction:column;align-items:center;gap:1px}
+.nav-btn .ni{font-size:1.3rem}
+.nav-btn.active{color:var(--amber);background:var(--bg-warm)}
+.sec{display:none;padding:16px}
+.sec.active{display:block}
+.s-title{font-size:1.15rem;font-weight:700;margin-bottom:4px}
+.s-title::after{content:'';display:block;width:34px;height:3px;background:var(--amber);margin-top:6px;border-radius:2px}
+.s-desc{font-size:.82rem;color:var(--ink-soft);margin:8px 0 14px;line-height:1.7}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 16px;box-shadow:var(--shadow);margin-bottom:14px}
+
+/* CHECK-IN */
+.checkin-big{text-align:center;padding:8px 0}
+.fire-emoji{font-size:3.2rem;line-height:1}
+.streak-txt{font-size:1rem;font-weight:700;margin:6px 0}
+.streak-txt b{color:var(--fire);font-family:'Playfair Display',serif;font-size:1.3rem}
+.check-btn{display:inline-flex;align-items:center;gap:8px;background:var(--amber);color:#fff;font-weight:700;padding:13px 32px;border-radius:999px;border:none;cursor:pointer;font-family:'Noto Serif TC',serif;font-size:1rem;margin-top:8px;transition:transform .15s,background .2s}
+.check-btn:hover{background:var(--amber-deep)}
+.check-btn:active{transform:scale(.95)}
+.check-btn.done{background:var(--green);pointer-events:none}
+
+/* TASKS */
+.task{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid var(--line);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.task:last-child{border-bottom:none}
+.task-box{width:24px;height:24px;flex-shrink:0;border:2px solid var(--line);border-radius:7px;display:flex;align-items:center;justify-content:center;color:transparent;font-size:.9rem;transition:all .15s;margin-top:1px}
+.task-box.done{background:var(--green);border-color:var(--green);color:#fff}
+.task-body{flex:1}
+.task-name{font-size:.9rem;font-weight:700}
+.task-name.done{text-decoration:line-through;color:var(--ink-soft)}
+.task-pts{font-size:.72rem;color:var(--amber);font-weight:700}
+.task-desc{font-size:.75rem;color:var(--ink-soft);line-height:1.6}
+
+/* WEEK MAP */
+.week-map{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.wk-node{background:var(--bg-warm);border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:12px 6px;text-align:center;position:relative}
+.wk-node.done{background:var(--green-lt);border-color:var(--green)}
+.wk-node.current{border-color:var(--amber);border-width:2.5px;background:#fff8f0}
+.wk-badge{font-size:1.7rem;line-height:1;filter:grayscale(1);opacity:.4}
+.wk-node.done .wk-badge,.wk-node.current .wk-badge{filter:none;opacity:1}
+.wk-num{font-size:.62rem;font-weight:700;color:var(--ink-soft);margin-top:4px}
+.wk-name{font-size:.6rem;color:var(--ink-soft);line-height:1.3;margin-top:1px}
+.wk-node.current .wk-num{color:var(--amber)}
+
+/* PROGRESS BAR */
+.pbar-wrap{background:var(--bg-warm);border-radius:999px;height:10px;overflow:hidden;margin:10px 0 4px}
+.pbar{height:100%;background:linear-gradient(90deg,var(--amber),var(--gold));border-radius:999px;transition:width .5s}
+
+/* REWARDS */
+.reward{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-warm);border:1px solid var(--line);border-radius:var(--radius-sm);margin-bottom:9px}
+.reward-icon{font-size:1.8rem;flex-shrink:0}
+.reward-body{flex:1}
+.reward-name{font-size:.88rem;font-weight:700}
+.reward-cost{font-size:.72rem;color:var(--amber);font-weight:700}
+.reward-btn{background:var(--amber);color:#fff;border:none;border-radius:999px;padding:6px 14px;font-size:.76rem;font-weight:700;cursor:pointer;font-family:'Noto Serif TC',serif;white-space:nowrap}
+.reward-btn:disabled{background:var(--line);color:var(--ink-soft);cursor:not-allowed}
+.reward-btn.owned{background:var(--green)}
+
+/* BADGES earned */
+.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:6px}
+.badge-item{text-align:center}
+.badge-ic{font-size:2rem;filter:grayscale(1);opacity:.35}
+.badge-item.got .badge-ic{filter:none;opacity:1}
+.badge-lb{font-size:.62rem;color:var(--ink-soft);margin-top:2px}
+
+/* LEADERBOARD */
+.lb-tabs{display:flex;gap:6px;margin-bottom:12px}
+.lb-tab{flex:1;padding:7px 4px;border:1.5px solid var(--line);border-radius:999px;background:transparent;font-family:'Noto Serif TC',serif;font-size:.76rem;font-weight:700;cursor:pointer;color:var(--ink-soft);text-align:center}
+.lb-tab.active{background:var(--amber);border-color:var(--amber);color:#fff}
+.lb-row{display:flex;align-items:center;gap:11px;padding:10px 8px;border-bottom:1px solid var(--line)}
+.lb-rank{width:26px;text-align:center;font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;flex-shrink:0}
+.lb-rank.top1{color:var(--gold)}.lb-rank.top2{color:#94a3b8}.lb-rank.top3{color:#b45309}
+.lb-name{flex:1;font-size:.88rem;font-weight:700}
+.lb-me{background:#fff8f0;border-radius:8px}
+.lb-val{font-size:.85rem;font-weight:700;color:var(--amber)}
+.lb-val.growth{color:var(--green)}.lb-val.streak{color:var(--fire)}
+
+/* POSTS */
+.post-composer{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+textarea.inp{resize:vertical;min-height:64px;margin-bottom:0}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap}
+.tag-pick{padding:4px 12px;border:1.5px solid var(--line);border-radius:999px;background:transparent;font-family:'Noto Serif TC',serif;font-size:.74rem;cursor:pointer;color:var(--ink-soft)}
+.tag-pick.active{background:var(--teal);border-color:var(--teal);color:#fff}
+.post{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px;margin-bottom:10px;box-shadow:var(--shadow)}
+.post-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.post-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--amber),var(--amber-deep));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0}
+.post-name{font-weight:700;font-size:.85rem}
+.post-tag{font-size:.62rem;background:var(--bg-warm);border:1px solid var(--line);border-radius:999px;padding:1px 8px;color:var(--ink-soft)}
+.post-time{font-size:.66rem;color:var(--ink-soft);margin-left:auto}
+.post-text{font-size:.86rem;color:var(--ink);line-height:1.75;white-space:pre-wrap}
+.post-foot{display:flex;align-items:center;gap:6px;margin-top:8px}
+.like-btn{display:inline-flex;align-items:center;gap:5px;background:var(--bg-warm);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:.76rem;cursor:pointer;color:var(--ink-soft);font-family:'Noto Serif TC',serif;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.like-btn.liked{background:#fee2e2;border-color:#fca5a5;color:#dc2626}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--amber);color:#fff;font-weight:600;padding:11px 24px;border-radius:999px;border:none;cursor:pointer;font-family:'Noto Serif TC',serif;font-size:.88rem;transition:background .2s,transform .15s}
+.btn:hover{background:var(--amber-deep)}.btn:active{transform:scale(.96)}
+.btn.full{width:100%}.btn.teal{background:var(--teal)}.btn.teal:hover{background:#0c5e57}
+.btn.sm{padding:7px 15px;font-size:.78rem}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink-soft)}
+
+/* MISC */
+.toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 20px;border-radius:999px;font-size:.85rem;font-weight:700;z-index:200;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;box-shadow:var(--shadow-lg);white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty{text-align:center;padding:26px 16px;color:var(--ink-soft);font-size:.85rem}
+.spin{display:inline-block;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.foot{text-align:center;padding:24px 16px 8px;color:var(--ink-soft);font-size:.78rem;border-top:1px solid var(--line);margin-top:20px}
+.foot strong{color:var(--amber)}
+.cloud-off{background:#fef3c7;border:1px solid var(--gold);border-radius:var(--radius-sm);padding:10px 12px;font-size:.78rem;color:var(--amber-dark);margin-bottom:14px;line-height:1.6}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}
+.reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<!-- SETUP -->
+<div id="setup">
+  <div class="setup-box">
+    <h2>🏃 加入 8 週陪跑挑戰</h2>
+    <p>取一個暱稱和四位數 PIN（記住它，換裝置能用同一組登入）。你的積分會存在雲端，能跟同學一起 PK、看排行榜、交流心得。</p>
+    <div class="inp-label">暱稱（同學會看到）</div>
+    <input class="inp" id="suNick" placeholder="例：衝刺小獅" maxlength="12">
+    <div class="inp-label">四位數 PIN</div>
+    <input class="inp" id="suPin" type="tel" inputmode="numeric" maxlength="4" placeholder="例：1688">
+    <div class="inp-label">起始級分（五科總和，之後比進步幅度用）</div>
+    <input class="inp" id="suScore" type="number" placeholder="例：45（不確定可先填 0）">
+    <button class="btn full" id="suBtn" onclick="doRegister()">🚀 開始挑戰</button>
+    <p style="margin-top:10px;font-size:.72rem;text-align:center">還沒設定雲端？也可以 <a href="#" onclick="skipCloud();return false;">先單機試用</a></p>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="eyebrow display">8 Week Challenge</span>
+  <h1>嗨，<span class="hi-name" id="heroName">同學</span>！</h1>
+  <div class="stat-strip">
+    <div class="stat-c"><div class="n fire" id="stFire">0</div><div class="l">🔥 連續天數</div></div>
+    <div class="stat-c"><div class="n pt" id="stPts">0</div><div class="l">⭐ 總積分</div></div>
+    <div class="stat-c"><div class="n wk" id="stWk">1</div><div class="l">📅 第幾週</div></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="bot-nav">
+  <button class="nav-btn active" onclick="tab('home',this)"><span class="ni">🔥</span><span>打卡</span></button>
+  <button class="nav-btn" onclick="tab('map',this)"><span class="ni">🗺️</span><span>關卡</span></button>
+  <button class="nav-btn" onclick="tab('shop',this)"><span class="ni">🎁</span><span>獎勵</span></button>
+  <button class="nav-btn" onclick="tab('rank',this)"><span class="ni">🏆</span><span>排行</span></button>
+  <button class="nav-btn" onclick="tab('wall',this)"><span class="ni">💬</span><span>心得牆</span></button>
+</nav>
+
+<!-- HOME: check-in + tasks -->
+<div class="sec active" id="sec-home">
+  <div class="card checkin-big reveal">
+    <div class="fire-emoji" id="fireBig">🔥</div>
+    <div class="streak-txt">已連續打卡 <b id="streakNum">0</b> 天</div>
+    <button class="check-btn" id="checkBtn" onclick="doCheckIn()">今日打卡 +10 分</button>
+    <p style="font-size:.72rem;color:var(--ink-soft);margin-top:8px">連 7 天積分 ×1.5、連 14 天 ×2，別讓火焰熄滅！</p>
+  </div>
+  <div class="card reveal">
+    <div class="s-title" style="font-size:1rem">✅ 今日學習任務</div>
+    <p class="s-desc" style="margin:6px 0 4px">完成任務累積積分。每天 00:00 重置。</p>
+    <div id="taskList"></div>
+  </div>
+  <div class="foot"><p>✨ <strong>Gina教室的AI奇蹟</strong><br>AI賦能｜老師的教學進化日常</p></div>
+</div>
+
+<!-- MAP: 8 week -->
+<div class="sec" id="sec-map">
+  <div class="s-title reveal">8 週闖關地圖</div>
+  <p class="s-desc reveal">每週一枚主題徽章，完成當週目標即點亮。習慣養成需要約 8 週，一起走完全程！</p>
+  <div class="card reveal">
+    <div class="week-map" id="weekMap"></div>
+    <div class="pbar-wrap"><div class="pbar" id="weekPbar" style="width:0%"></div></div>
+    <div style="font-size:.75rem;color:var(--ink-soft);text-align:center" id="weekPct">整體進度 0%</div>
+  </div>
+  <div class="card reveal">
+    <div class="s-title" style="font-size:1rem">🏅 我的徽章牆</div>
+    <div class="badge-grid" id="badgeWall" style="margin-top:10px"></div>
+  </div>
+  <div class="foot"><p>✨ <strong>Gina教室的AI奇蹟</strong><br>AI賦能｜老師的教學進化日常</p></div>
+</div>
+
+<!-- SHOP -->
+<div class="sec" id="sec-shop">
+  <div class="s-title reveal">積分兌換所</div>
+  <p class="s-desc reveal">用累積的積分兌換獎勵。虛擬獎勵立即生效；實體獎勵送出申請後由老師核發。</p>
+  <div class="card reveal">
+    <div class="s-title" style="font-size:.95rem">🎨 虛擬獎勵（立即）</div>
+    <div id="virtualShop" style="margin-top:10px"></div>
+  </div>
+  <div class="card reveal">
+    <div class="s-title" style="font-size:.95rem">🎁 實體獎勵（老師核發）</div>
+    <div id="realShop" style="margin-top:10px"></div>
+  </div>
+  <div class="foot"><p>✨ <strong>Gina教室的AI奇蹟</strong><br>AI賦能｜老師的教學進化日常</p></div>
+</div>
+
+<!-- RANK -->
+<div class="sec" id="sec-rank">
+  <div class="s-title reveal">班級排行榜</div>
+  <p class="s-desc reveal">不只比積分——更比「進步幅度」，每個人都有機會當第一名 💪</p>
+  <div id="cloudWarnRank"></div>
+  <div class="card reveal">
+    <div class="lb-tabs">
+      <button class="lb-tab active" onclick="lbTab('growth',this)">📈 進步榜</button>
+      <button class="lb-tab" onclick="lbTab('streak',this)">🔥 連續榜</button>
+      <button class="lb-tab" onclick="lbTab('points',this)">⭐ 積分榜</button>
+    </div>
+    <div id="lbList"><div class="empty">載入中…</div></div>
+    <button class="btn ghost sm full" style="margin-top:10px" onclick="loadLeaderboard()">🔄 重新整理</button>
+  </div>
+  <div class="foot"><p>✨ <strong>Gina教室的AI奇蹟</strong><br>AI賦能｜老師的教學進化日常</p></div>
+</div>
+
+<!-- WALL -->
+<div class="sec" id="sec-wall">
+  <div class="s-title reveal">心得交流牆</div>
+  <p class="s-desc reveal">分享讀書方法、打氣、求救都可以。互相按讚加油，一起走過這段路。</p>
+  <div id="cloudWarnWall"></div>
+  <div class="card reveal">
+    <div class="post-composer">
+      <textarea class="inp" id="postText" placeholder="今天的心得、發現的好方法、或想對大家說的話…" maxlength="300"></textarea>
+      <div class="tag-row" id="tagRow">
+        <button class="tag-pick active" onclick="pickTag('心得',this)">心得</button>
+        <button class="tag-pick" onclick="pickTag('讀書法',this)">讀書法</button>
+        <button class="tag-pick" onclick="pickTag('打氣',this)">打氣</button>
+        <button class="tag-pick" onclick="pickTag('求救',this)">求救</button>
+      </div>
+      <button class="btn teal full" onclick="doPost()">發表（送出後待老師審核）</button>
+    </div>
+  </div>
+  <div id="postList"><div class="empty">載入中…</div></div>
+  <button class="btn ghost sm full" onclick="loadPosts()">🔄 重新整理</button>
+  <div class="foot"><p>✨ <strong>Gina教室的AI奇蹟</strong><br>AI賦能｜老師的教學進化日常</p></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ════════ 設定：貼上你的 GAS 網址 ════════ */
+var API_URL = 'PASTE_YOUR_GAS_WEB_APP_URL_HERE';
+/* ════════════════════════════════════════ */
+
+var CLOUD = (API_URL.indexOf('PASTE_YOUR') < 0);
+
+/* ── 8 週徽章定義 ── */
+var WEEKS=[
+  {ic:'🌱',name:'啟動'},{ic:'📚',name:'扎根'},{ic:'🎯',name:'瞄準'},{ic:'🔍',name:'弱科獵人'},
+  {ic:'⚡',name:'加速'},{ic:'💪',name:'穩定'},{ic:'🚀',name:'突破'},{ic:'🏆',name:'衝刺備戰'}
+];
+/* ── 每日任務（對應腦科學系統）── */
+var TASKS=[
+  {id:'frog',name:'完成今日青蛙任務',pts:15,desc:'最難的弱科任務，在上午黃金期先攻'},
+  {id:'pomo',name:'完成 3 個番茄鐘',pts:10,desc:'25分鐘專注 × 3，休息不看手機'},
+  {id:'review',name:'間隔重複複習（D+1/D+7）',pts:8,desc:'複習舊內容，對抗遺忘曲線'},
+  {id:'feynman',name:'費曼輸出一個概念',pts:7,desc:'用一句話解釋今天最難的觀念'},
+  {id:'reflect',name:'睡前三點微覆盤',pts:5,desc:'Plus / Delta / Action'}
+];
+/* ── 虛擬 & 實體獎勵 ── */
+var VIRTUAL=[
+  {id:'title_focus',icon:'🎖️',name:'稱號：專注達人',cost:50},
+  {id:'title_streak',icon:'🔥',name:'稱號：不滅火焰',cost:120},
+  {id:'theme_gold',icon:'✨',name:'黃金主題色',cost:80},
+  {id:'frame_star',icon:'⭐',name:'星星頭像框',cost:100}
+];
+var REAL=[
+  {id:'hw_pass',icon:'📝',name:'免作業券 ×1',cost:150},
+  {id:'handout',icon:'📖',name:'獨家加分講義',cost:200},
+  {id:'snack',icon:'🍫',name:'療癒小點心',cost:100},
+  {id:'seat',icon:'💺',name:'選座位優先權',cost:180}
+];
+
+/* ── 狀態 ── */
+var U={
+  userId:'',nickname:'',pin:'',points:0,streak:0,
+  lastCheck:'',startScore:0,curScore:0,
+  tasksDone:{},tasksDate:'',owned:{},startDate:''
+};
+var curTag='心得';
+var lbCache={growth:[],streak:[],points:[]};
+
+/* ── 儲存 ── */
+function save(){try{localStorage.setItem('gsat8wk',JSON.stringify(U));}catch(e){}}
+function load(){try{var s=localStorage.getItem('gsat8wk');if(s)Object.assign(U,JSON.parse(s));}catch(e){}}
+
+/* ── 工具 ── */
+function todayStr(){var t=new Date();return t.getFullYear()+'-'+p2(t.getMonth()+1)+'-'+p2(t.getDate());}
+function p2(n){return String(n).padStart(2,'0');}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+function curWeek(){
+  if(!U.startDate)return 1;
+  var d=Math.floor((new Date(todayStr())-new Date(U.startDate))/864e5);
+  return Math.min(8,Math.max(1,Math.floor(d/7)+1));
+}
+
+/* ── API 呼叫 ── */
+function api(action,data){
+  data=data||{};data.action=action;
+  return fetch(API_URL,{method:'POST',body:JSON.stringify(data)})
+    .then(function(r){return r.json();});
+}
+
+/* ── 註冊 ── */
+function doRegister(){
+  var nick=document.getElementById('suNick').value.trim();
+  var pin=document.getElementById('suPin').value.trim();
+  var score=parseInt(document.getElementById('suScore').value)||0;
+  if(!nick){toast('請填暱稱');return;}
+  if(!/^\d{4}$/.test(pin)){toast('PIN 需為四位數字');return;}
+  U.nickname=nick;U.pin=pin;U.startScore=score;U.curScore=score;
+  if(!U.startDate)U.startDate=todayStr();
+  var btn=document.getElementById('suBtn');btn.textContent='連線中…';btn.disabled=true;
+  if(CLOUD){
+    api('register',{nickname:nick,pin:pin}).then(function(res){
+      if(res.ok){
+        U.userId=res.userId;
+        if(res.returning){U.points=res.points;U.streak=res.streak;}
+        save();finishSetup();
+      }else{toast(res.error||'註冊失敗');btn.textContent='🚀 開始挑戰';btn.disabled=false;}
+    }).catch(function(){toast('連線失敗，改用單機模式');skipCloud();});
+  }else{
+    U.userId='local';save();finishSetup();
+  }
+}
+function skipCloud(){
+  CLOUD=false;
+  var nick=document.getElementById('suNick').value.trim()||'同學';
+  var pin=document.getElementById('suPin').value.trim();
+  var score=parseInt(document.getElementById('suScore').value)||0;
+  U.nickname=nick;U.pin=pin;U.userId='local';U.startScore=score;U.curScore=score;
+  if(!U.startDate)U.startDate=todayStr();
+  save();finishSetup();
+}
+function finishSetup(){
+  document.getElementById('setup').classList.add('hide');
+  render();
+  if(CLOUD)cloudSync();
+}
+
+/* ── 打卡 ── */
+function doCheckIn(){
+  var today=todayStr();
+  if(U.lastCheck===today){toast('今天已經打卡囉！');return;}
+  // streak 計算
+  var y=new Date(today);y.setDate(y.getDate()-1);
+  var yStr=y.getFullYear()+'-'+p2(y.getMonth()+1)+'-'+p2(y.getDate());
+  if(U.lastCheck===yStr){U.streak++;}else{U.streak=1;}
+  U.lastCheck=today;
+  // 積分（連續加成）
+  var mult=U.streak>=14?2:(U.streak>=7?1.5:1);
+  var gain=Math.round(10*mult);
+  U.points+=gain;
+  save();render();
+  toast('🔥 打卡成功！+'+gain+' 分'+(mult>1?'（連續加成 ×'+mult+'）':''));
+  if(CLOUD)cloudSync();
+}
+
+/* ── 任務 ── */
+function toggleTask(id){
+  if(U.tasksDate!==todayStr()){U.tasksDone={};U.tasksDate=todayStr();}
+  var task=TASKS.find(function(t){return t.id===id;});
+  if(U.tasksDone[id]){U.tasksDone[id]=false;U.points=Math.max(0,U.points-task.pts);}
+  else{U.tasksDone[id]=true;U.points+=task.pts;toast('✅ +'+task.pts+' 分');}
+  save();render();
+  if(CLOUD)cloudSync();
+}
+
+/* ── 兌換 ── */
+function redeem(item,isReal){
+  if(U.points<item.cost){toast('積分不足，還差 '+(item.cost-U.points)+' 分');return;}
+  if(!isReal){
+    if(U.owned[item.id]){toast('已擁有');return;}
+    U.points-=item.cost;U.owned[item.id]=true;save();render();
+    toast('🎉 兌換成功：'+item.name);
+    if(CLOUD)cloudSync();
+  }else{
+    if(!confirm('確定用 '+item.cost+' 分兌換「'+item.name+'」？\n送出後由老師核發。'))return;
+    if(CLOUD){
+      api('redeem',{userId:U.userId,rewardName:item.name,cost:item.cost}).then(function(res){
+        if(res.ok){U.points=res.remain;save();render();toast('✅ 已送出申請，等老師核發');}
+        else toast(res.error||'兌換失敗');
+      });
+    }else{
+      U.points-=item.cost;save();render();toast('✅ 已記錄（單機模式，請自行告知老師）');
+    }
+  }
+}
+
+/* ── 雲端同步 ── */
+function cloudSync(){
+  if(!CLOUD||U.userId==='local')return;
+  api('sync',{userId:U.userId,points:U.points,streak:U.streak,
+    startScore:U.startScore,curScore:U.curScore,week:curWeek(),school:''}).catch(function(){});
+}
+
+/* ── 排行榜 ── */
+function loadLeaderboard(){
+  if(!CLOUD){document.getElementById('lbList').innerHTML='<div class="empty">單機模式無法看排行榜<br>請設定雲端後台</div>';return;}
+  document.getElementById('lbList').innerHTML='<div class="empty"><span class="spin">⏳</span> 載入中…</div>';
+  api('leaderboard',{userId:U.userId}).then(function(res){
+    if(res.ok){
+      lbCache.growth=res.byGrowth;lbCache.streak=res.byStreak;lbCache.points=res.byPoints;
+      renderLb('growth');
+    }else{document.getElementById('lbList').innerHTML='<div class="empty">'+(res.error||'載入失敗')+'</div>';}
+  }).catch(function(){document.getElementById('lbList').innerHTML='<div class="empty">連線失敗</div>';});
+}
+var curLbType='growth';
+function lbTab(type,btn){
+  curLbType=type;
+  document.querySelectorAll('.lb-tab').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderLb(type);
+}
+function renderLb(type){
+  var list=lbCache[type]||[];
+  if(list.length===0){document.getElementById('lbList').innerHTML='<div class="empty">還沒有資料，快去打卡累積吧！</div>';return;}
+  var html='';
+  list.forEach(function(item,i){
+    var rank=i+1;
+    var rankCls=rank===1?'top1':rank===2?'top2':rank===3?'top3':'';
+    var medal=rank<=3?['🥇','🥈','🥉'][rank-1]:rank;
+    var val,cls;
+    if(type==='growth'){val=(item.growth>=0?'+':'')+item.growth+' 級';cls='growth';}
+    else if(type==='streak'){val=item.streak+' 天';cls='streak';}
+    else{val=item.points+' 分';cls='';}
+    var isMe=item.nickname===U.nickname;
+    html+='<div class="lb-row'+(isMe?' lb-me':'')+'">'+
+      '<div class="lb-rank '+rankCls+'">'+medal+'</div>'+
+      '<div class="lb-name">'+esc(item.nickname)+(isMe?' （你）':'')+'</div>'+
+      '<div class="lb-val '+cls+'">'+val+'</div></div>';
+  });
+  document.getElementById('lbList').innerHTML=html;
+}
+
+/* ── 心得牆 ── */
+function pickTag(tag,btn){curTag=tag;document.querySelectorAll('.tag-pick').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');}
+function doPost(){
+  var text=document.getElementById('postText').value.trim();
+  if(text.length<4){toast('多寫幾個字吧');return;}
+  if(!CLOUD){toast('單機模式無法發表，請設定雲端');return;}
+  api('addPost',{userId:U.userId,text:text,tag:curTag}).then(function(res){
+    if(res.ok){document.getElementById('postText').value='';toast('✅ 已送出，待老師審核');loadPosts();}
+    else toast(res.error||'發表失敗');
+  });
+}
+function loadPosts(){
+  if(!CLOUD){document.getElementById('postList').innerHTML='<div class="empty">單機模式無法看心得牆<br>請設定雲端後台</div>';return;}
+  document.getElementById('postList').innerHTML='<div class="empty"><span class="spin">⏳</span> 載入中…</div>';
+  api('posts',{userId:U.userId}).then(function(res){
+    if(res.ok){renderPosts(res.posts);}
+    else{document.getElementById('postList').innerHTML='<div class="empty">'+(res.error||'載入失敗')+'</div>';}
+  }).catch(function(){document.getElementById('postList').innerHTML='<div class="empty">連線失敗</div>';});
+}
+function renderPosts(posts){
+  if(!posts||posts.length===0){document.getElementById('postList').innerHTML='<div class="empty">還沒有人發文，當第一個吧！</div>';return;}
+  var html='';
+  posts.forEach(function(p){
+    var initial=(p.nickname||'?').charAt(0);
+    var t=new Date(p.created);
+    var timeStr=(t.getMonth()+1)+'/'+t.getDate();
+    html+='<div class="post">'+
+      '<div class="post-head">'+
+      '<div class="post-avatar">'+esc(initial)+'</div>'+
+      '<div class="post-name">'+esc(p.nickname)+'</div>'+
+      '<div class="post-tag">'+esc(p.tag)+'</div>'+
+      '<div class="post-time">'+timeStr+'</div>'+
+      '</div>'+
+      '<div class="post-text">'+esc(p.text)+'</div>'+
+      '<div class="post-foot">'+
+      '<button class="like-btn'+(p.liked?' liked':'')+'" onclick="doLike(\''+p.postId+'\')">'+
+      (p.liked?'❤️':'🤍')+' <span>'+p.likes+'</span> 加油</button>'+
+      '</div></div>';
+  });
+  document.getElementById('postList').innerHTML=html;
+}
+function doLike(postId){
+  if(!CLOUD)return;
+  api('like',{userId:U.userId,postId:postId}).then(function(res){if(res.ok)loadPosts();});
+}
+
+/* ── 渲染主畫面 ── */
+function esc(s){return String(s==null?'':s).replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function render(){
+  document.getElementById('heroName').textContent=U.nickname||'同學';
+  document.getElementById('stFire').textContent=U.streak;
+  document.getElementById('stPts').textContent=U.points;
+  document.getElementById('stWk').textContent=curWeek();
+  document.getElementById('streakNum').textContent=U.streak;
+  document.getElementById('fireBig').style.opacity=U.streak>0?'1':'.35';
+  // check button
+  var cb=document.getElementById('checkBtn');
+  if(U.lastCheck===todayStr()){cb.textContent='✅ 今日已打卡';cb.classList.add('done');}
+  else{cb.textContent='今日打卡 +10 分';cb.classList.remove('done');}
+  // tasks
+  if(U.tasksDate!==todayStr()){U.tasksDone={};}
+  var th='';
+  TASKS.forEach(function(t){
+    var done=U.tasksDone[t.id];
+    th+='<div class="task" onclick="toggleTask(\''+t.id+'\')">'+
+      '<div class="task-box'+(done?' done':'')+'">'+(done?'✓':'')+'</div>'+
+      '<div class="task-body"><div class="task-name'+(done?' done':'')+'">'+t.name+' <span class="task-pts">+'+t.pts+'</span></div>'+
+      '<div class="task-desc">'+t.desc+'</div></div></div>';
+  });
+  document.getElementById('taskList').innerHTML=th;
+  // week map
+  var wk=curWeek();var wh='';
+  WEEKS.forEach(function(w,i){
+    var n=i+1;var cls=n<wk?'done':(n===wk?'current':'');
+    wh+='<div class="wk-node '+cls+'"><div class="wk-badge">'+w.ic+'</div><div class="wk-num">第'+n+'週</div><div class="wk-name">'+w.name+'</div></div>';
+  });
+  document.getElementById('weekMap').innerHTML=wh;
+  var pct=Math.round((wk-1)/8*100);
+  document.getElementById('weekPbar').style.width=pct+'%';
+  document.getElementById('weekPct').textContent='整體進度 '+pct+'%（第 '+wk+' 週 / 共 8 週）';
+  // badge wall
+  var bh='';
+  WEEKS.forEach(function(w,i){
+    var got=(i+1)<wk;
+    bh+='<div class="badge-item'+(got?' got':'')+'"><div class="badge-ic">'+w.ic+'</div><div class="badge-lb">'+w.name+'</div></div>';
+  });
+  document.getElementById('badgeWall').innerHTML=bh;
+  // shops
+  renderShop();
+  // cloud warnings
+  var warn=CLOUD?'':'<div class="cloud-off">⚠️ 目前為單機模式，排行榜與心得牆需要雲端後台才能使用。請老師設定 GAS 網址。</div>';
+  document.getElementById('cloudWarnRank').innerHTML=warn;
+  document.getElementById('cloudWarnWall').innerHTML=warn;
+}
+function renderShop(){
+  var vh='';
+  VIRTUAL.forEach(function(it){
+    var owned=U.owned[it.id];
+    vh+='<div class="reward"><div class="reward-icon">'+it.icon+'</div>'+
+      '<div class="reward-body"><div class="reward-name">'+it.name+'</div><div class="reward-cost">⭐ '+it.cost+' 分</div></div>'+
+      '<button class="reward-btn'+(owned?' owned':'')+'" '+(owned?'disabled':'')+' onclick="redeem('+JSON.stringify(it).replace(/"/g,'&quot;')+',false)">'+(owned?'已擁有':'兌換')+'</button></div>';
+  });
+  document.getElementById('virtualShop').innerHTML=vh;
+  var rh='';
+  REAL.forEach(function(it){
+    var can=U.points>=it.cost;
+    rh+='<div class="reward"><div class="reward-icon">'+it.icon+'</div>'+
+      '<div class="reward-body"><div class="reward-name">'+it.name+'</div><div class="reward-cost">⭐ '+it.cost+' 分</div></div>'+
+      '<button class="reward-btn" '+(can?'':'disabled')+' onclick="redeem('+JSON.stringify(it).replace(/"/g,'&quot;')+',true)">兌換</button></div>';
+  });
+  document.getElementById('realShop').innerHTML=rh;
+}
+
+/* ── 分頁 ── */
+function tab(id,btn){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('sec-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='rank')loadLeaderboard();
+  if(id==='wall')loadPosts();
+}
+
+/* ── 啟動 ── */
+function boot(){
+  load();
+  if(U.userId){document.getElementById('setup').classList.add('hide');render();if(CLOUD)cloudSync();}
+  var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('in');});},{threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+</script>
+</body>
+</html>
